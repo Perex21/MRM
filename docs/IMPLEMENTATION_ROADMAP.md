@@ -1,47 +1,54 @@
 # Implementation roadmap
 
-## Mission 001 — foundation and first experience (done)
+## Done
 
-- Scaffold, strict TypeScript, Tailwind v4 tokens, fonts.
-- Shell, hero, selected work, further-chapters index, footer.
-- Motion foundation (CSS entrances, `Reveal`, mobile menu).
-- `npm run lint`, `npm run typecheck`, `npm run build` pass.
-- Layout measured in a browser at 360 / 768 / 1024 / 1440. Seen by eye at 1440 only.
+### Mission 001 — foundation
+Scaffold, tokens, fonts, shell, hero, first archive, motion foundation.
 
-## Mission 001.1 — quality gate (done)
+### Mission 001.1 — quality gate
+Reduced-motion menu, nav breakpoint moved to `lg`, audit triaged.
 
-- Reduced motion: mobile menu no longer animates at all; link hover/press movement gated.
-- Found and fixed in the browser: header wordmark wrapping at 360px, desktop nav not
-  fitting at 768px (breakpoint moved to `lg`), stray hero line crossing text on phones.
-- `npm audit` triaged: one dev-only advisory with no compatible fix (see `ARCHITECTURE.md`).
-- Seen by eye: 360 (hero, open menu), 375, 768 and 1440 (hero). 1024 was measured only.
-- **Still unverified:** reduced-motion mode in a real browser (the test browser cannot
-  emulate the preference), no-JavaScript rendering, screen readers, other browsers.
+### Mission 002 — complete website
+- Home page finished: hero with the seal, archive, approach, capabilities, profile, contact.
+- Three case-study pages at `/work/[slug]`, written from the projects' own source and docs.
+- Original illustration per project; HTML flow schematic per case study.
+- Motion system: reveals (`rise`, `unveil`), headline masks, link and row feedback, pointer
+  depth on artwork, one scroll-linked hand-off, the seal as the signature interaction.
+- 404 page, metadata, Open Graph image, robots, sitemap.
+- Content integrity tests (`npm test`).
 
-## Mission 002 — real content and case studies (next)
+Verification in that session:
+- `npm run lint`, `npm run typecheck`, `npm test`, `npm run build` pass.
+- All five routes measured at 360 / 390 / 768 / 1024 / 1440: no horizontal overflow, no text
+  under 13px, no undersized targets.
+- Seen by eye: home at ~1230px (every section), home at 390px (hero, open menu), one case
+  study header at ~1230px.
+- Exercised: seal press, mobile menu (open, Tab in, Escape with focus return, link click),
+  scroll-spy, anchor navigation.
 
-Blocked on the owner filling the gaps in `CONTENT_INVENTORY.md`.
+## Not yet verified — do these first
 
-1. Visual review at 1024px and of the lower page (work rows, chapters, footer) on phones;
-   test with the OS reduced-motion setting switched on.
-2. Set the real name and contact destination; add the hero contact action.
-3. Fill project facts (role, stack, outcomes, links) and replace plates with screenshots.
-4. Decide on `/work/[slug]` case-study routes; build one fully as the template.
-5. Write and build the About & engineering approach section.
+1. **Reduced motion in a real browser.** The test browser cannot emulate the preference.
+   Turn on the OS setting and check: content visible at once, menu opens instantly, seal
+   changes without animation, no ridge movement on scroll.
+2. **Case-study pages on a phone**, especially the flow schematic. Measured, not seen.
+3. **768 and 1024 by eye** for the new sections.
+4. **No-JavaScript rendering.** The server HTML contains no hidden content (checked), but the
+   page was not loaded with scripts disabled.
+5. **Screen reader pass** and an automated audit (axe, Lighthouse).
+6. **Other browsers** — only one Chromium-based browser was used.
+7. **HTTP status for unknown case-study slugs.** They render the 404 page with `noindex` but
+   answer 200, in the production build too. Decide whether a true 404 status is worth making
+   the route block instead of stream.
 
-## Mission 003 — capabilities, résumé, contact
+## Next — needs the owner
 
-- Capabilities section tied to project evidence.
-- Résumé download and professional links.
-- Contact section (mailto first; a form only if there is a backend reason).
-
-## Mission 004 — polish and launch readiness
-
-- Metadata, Open Graph image, sitemap, robots.
-- Accessibility audit with tooling (axe, screen reader pass) and Lighthouse.
-- Re-check `npm audit` (one accepted dev-only advisory, see `ARCHITECTURE.md`).
-- Choose hosting; deploy only on the owner's instruction.
+- Confirm name, LinkedIn URL and that the ECHOSS project may be shown.
+- Add roles, real screenshots, measured results and dates where they exist.
+- Decide on email and résumé.
+- Choose a domain, set `NEXT_PUBLIC_SITE_URL`, then deploy on instruction.
 
 ## Deferred until a feature needs them
 
-- GSAP, 3D, page transitions, a CMS, analytics, light/dark toggle, tests.
+GSAP, three.js, page transitions, a CMS, analytics, a contact form with a backend,
+light/dark toggle, interface tests.

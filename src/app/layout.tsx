@@ -23,9 +23,30 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const title = `${site.identity} — ${site.person.name}, ${site.role}`;
+
 export const metadata: Metadata = {
-  title: `${site.identity} — ${site.role}`,
+  metadataBase: new URL(site.url),
+  title: {
+    default: title,
+    template: `%s — ${site.identity}`,
+  },
   description: site.description,
+  authors: [{ name: site.person.name, url: site.links[0].href }],
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    siteName: site.identity,
+    title,
+    description: site.description,
+    url: "/",
+    locale: "en",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description: site.description,
+  },
 };
 
 export const viewport: Viewport = {
@@ -47,7 +68,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Skip to content
         </a>
         <SiteHeader />
-        <main id="main" className="flex-1">
+        <main id="main" tabIndex={-1} className="flex-1 focus:outline-none">
           {children}
         </main>
         <SiteFooter />

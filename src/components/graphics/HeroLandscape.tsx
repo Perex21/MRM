@@ -1,13 +1,26 @@
+"use client";
+
+import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { cn } from "@/lib/cn";
 
 /**
  * Hero landscape: receding ridgelines with the Divergence drawn at landscape
  * scale — a dashed straight road and a path that leaves it. The nearest ridge
  * is parchment, so the paper of the next section rises into the hero.
- * Decorative. The cinnabar disc is positioned separately in Hero so it never
- * lands behind body text when this artwork is cropped.
+ *
+ * Section hand-off: as the page scrolls, the far and middle ridges lag
+ * slightly behind the paper ridge, so the paper appears to rise over them.
+ * The offsets are small, scroll stays native, and under reduced motion (or
+ * without JavaScript) the layers simply stay where they are drawn.
+ *
+ * Decorative. Anchored bottom-right so the composition survives narrow crops.
  */
 export function HeroLandscape({ className }: { className?: string }) {
+  const prefersReducedMotion = useReducedMotion();
+  const { scrollY } = useScroll();
+  const farShift = useTransform(scrollY, [0, 900], [0, prefersReducedMotion ? 0 : 64]);
+  const midShift = useTransform(scrollY, [0, 900], [0, prefersReducedMotion ? 0 : 30]);
+
   return (
     <svg
       viewBox="0 0 1440 900"
@@ -27,11 +40,13 @@ export function HeroLandscape({ className }: { className?: string }) {
         </linearGradient>
       </defs>
 
-      <path
+      <motion.path
+        style={{ y: farShift }}
         fill="url(#hero-ridge-far)"
         d="M0 900V600c120-40 200-10 300-60s180-70 260-20 140 80 240 40 160-120 260-60 180 100 260 60 80-20 120 0v340z"
       />
-      <path
+      <motion.path
+        style={{ y: midShift }}
         fill="url(#hero-ridge-mid)"
         d="M0 900V700c100-20 180-60 260-40s160 80 260 40 160-90 260-50 160 90 260 50 180-80 260-40 100 40 140 20v220z"
       />

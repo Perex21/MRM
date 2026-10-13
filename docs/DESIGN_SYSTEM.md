@@ -21,6 +21,7 @@ Derived tints (added for contrast; ratios calculated, not tool-audited):
 | --- | --- | --- |
 | `cinnabar-bright` | `#CF5F5C` | Accent text on ink (~4.9:1). Raw cinnabar on ink is ~2.5:1 |
 | `cinnabar-hover` | `#B33338` | Hover fill for the primary action |
+| `cinnabar-deep` | `#6F1C20` | Carved lines on the seal |
 | `jade-bright` | `#8FB199` | Focus ring on ink (~8:1). Raw jade on ink is ~3.6:1 |
 | `silver-dim` | `#7D7E78` | Tertiary text on ink (~4.6:1) |
 | `ink-soft`, `ink-faint` | `#4B4D47`, `#5D5F58` | Secondary / tertiary text on parchment |
@@ -68,14 +69,17 @@ Scale (fluid): `text-display` 40–144px · `text-title` 36–68px · `text-head
 
 ## The motif — the Divergence
 
-A straight line and a single stroke that leaves it. It appears at three scales:
+A straight path and a single stroke that leaves it. It changes form as the visitor moves on:
 
-1. **Seal** (`DivergenceMark`): cinnabar stamp in header, footer, favicon; bare glyph on
-   section labels.
-2. **Landscape** (`HeroLandscape`): a dashed straight road and a drawn path that departs
-   across the ridges. The nearest ridge is parchment, so the work section's paper rises
-   into the hero — this is the hero → work transition.
-3. **Plate** (`ProjectPlate`): one variation per project, standing in for screenshots.
+| Where | Form | Component |
+| --- | --- | --- |
+| Header, footer, favicon, section labels | Cinnabar stamp; bare glyph | `DivergenceMark` |
+| Hero | The disc as a seal carved with the motif; pressing it breaks the shard away | `Seal` |
+| Hero | A dashed straight road and a drawn path that departs across the ridges | `HeroLandscape` |
+| Between surfaces | The next surface rising as a ridgeline | `RidgeDivider` |
+| Archive and case-study headers | One composition per project: merging signals, facing ledgers, an echoing globe | `ProjectArt` |
+| Case studies | Stages on one straight path, parallel parts branching off | `Pipeline` |
+| Approach | Each principle steps further from the left edge | `Approach` |
 
 Extend the motif before introducing any new symbol.
 
@@ -83,7 +87,8 @@ Extend the motif before introducing any new symbol.
 
 | State | Treatment |
 | --- | --- |
-| Hover | Colour shift over 200ms; action arrow moves 4px. Never the only way to learn something |
+| Hover | Colour shift over 200ms; underline draws in; action arrow moves 4px. Never the only way to learn something |
+| Current | The nav link for the section in view gets `aria-current`, full-strength text and a drawn underline |
 | Focus | 2px outline in the surface's focus colour, 4px offset (`:focus-visible`) |
 | Active | 1px downward press, 120ms |
 | Disabled | Not used yet. Unavailable actions are omitted, not greyed out |
@@ -91,13 +96,37 @@ Extend the motif before introducing any new symbol.
 
 Interactive targets are at least 48px tall.
 
-## Project previews and technical details
+## Project artwork and technical details
 
-- Entry = numeral, domain label, title, summary, facts (`dl`), plate. Rows, not cards.
-- Facts use a `label` term with the value beside it; stack items are mono chips with a hairline.
-- Until real screenshots exist the plate is abstract and captioned as such.
+- Archive row = numeral, category, title, summary, highlights, status, illustration. Rows, not cards.
+- Illustrations are original SVG on ink, captioned "Illustration". They are never presented as
+  screenshots. When real screenshots exist, they replace the illustration in the case-study header.
+- Stack items are mono chips with a hairline. Facts use a `label` term beside the value.
+- Case-study body sits on paper; the flow schematic is an ink panel inside it.
 
 ## Motion
 
-See `CLAUDE.md` → Motion. Constants: `src/lib/motion.ts` and the `--duration-*` / `--ease-*`
-tokens. Durations: press 120ms, hover 200ms, reveal 700ms, headline 900ms, path draw 2.4s.
+Rules are in `CLAUDE.md` → Motion. Constants: `src/lib/motion.ts` and the `--duration-*` /
+`--ease-*` tokens.
+
+| Token | Value | Use |
+| --- | --- | --- |
+| `ease-entrance` | `cubic-bezier(0.22, 1, 0.36, 1)` | Standard entrances, UI feedback |
+| `ease-settle` | `cubic-bezier(0.16, 1, 0.3, 1)` | Large reveals: headlines, artwork, the seal |
+| `ease-ink` | `cubic-bezier(0.65, 0, 0.35, 1)` | Drawn strokes |
+| press / hover | 120ms / 200ms | UI feedback |
+| reveal | 650ms | Block reveals |
+| headline | 900ms | Masked headlines, artwork unveil |
+| draw | 2.4s | Hero path |
+
+| Effect | Where | How |
+| --- | --- | --- |
+| Block reveal (`rise`) | Rows and section content | `Reveal`: fade + 16px settle, once |
+| Artwork reveal (`unveil`) | Archive illustrations | `Reveal variant="unveil"`: clip from the top, once |
+| Headline mask | Hero title, case-study titles | CSS `mask-line`, no JavaScript |
+| Interaction feedback | Links, actions, rows | `link-draw` underline, colour shift, 4px arrow nudge, 1px press |
+| Pointer depth | Archive illustrations | `Tilt`: up to 5° toward the cursor, mouse only |
+| Section hand-off | Hero → work | Far and middle ridges lag the paper ridge by up to 64px over the first 900px of scroll |
+| Signature | Hero seal | `Seal`: leans up to 10° toward the pointer; press to break and restore |
+
+One primary motion per element. Scroll is never taken over; nothing is pinned.

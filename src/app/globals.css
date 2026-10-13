@@ -62,7 +62,7 @@
 }
 
 @utility anim-settle {
-  animation: settle var(--duration-reveal) var(--ease-settle) var(--delay, 0ms) both;
+  animation: settle var(--duration-reveal) var(--ease-entrance) var(--delay, 0ms) both;
 }
 
 /* Masked headline line: wrap text in .mask-line > span. */
@@ -74,6 +74,23 @@
   & > span {
     display: block;
     animation: unmask var(--duration-headline) var(--ease-settle) var(--delay, 0ms) both;
+  }
+}
+
+/* Inline link: a rule that draws in from the left on hover and focus. */
+@utility link-draw {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 1px;
+  transition:
+    background-size var(--duration-hover) var(--ease-entrance),
+    color var(--duration-hover) var(--ease-entrance);
+
+  &:hover,
+  &:focus-visible,
+  &[aria-current] {
+    background-size: 100% 1px;
   }
 }
 

@@ -17,6 +17,7 @@
 
   /* Derived tints — exist only to meet text contrast on a given surface */
   --color-cinnabar-hover: #b33338;
+  --color-cinnabar-deep: #6f1c20; /* carved lines on the seal */
   --color-cinnabar-bright: #cf5f5c; /* accent text on ink, 4.9:1 */
   --color-jade-bright: #8fb199; /* focus + small text on ink, 8:1 */
   --color-silver-dim: #7d7e78; /* tertiary text on ink, 4.6:1 */
@@ -43,7 +44,8 @@
   --container-prose: 36rem;
 
   /* Motion */
-  --ease-settle: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-entrance: cubic-bezier(0.22, 1, 0.36, 1); /* standard entrances, UI feedback */
+  --ease-settle: cubic-bezier(0.16, 1, 0.3, 1); /* large reveals: headlines, artwork */
   --ease-ink: cubic-bezier(0.65, 0, 0.35, 1);
 }
 
@@ -64,7 +66,7 @@
 :root {
   --duration-press: 120ms;
   --duration-hover: 200ms;
-  --duration-reveal: 700ms;
+  --duration-reveal: 650ms;
   --duration-headline: 900ms;
   --duration-draw: 2400ms;
 }

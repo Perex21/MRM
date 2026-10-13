@@ -1,11 +1,13 @@
+import Link from "next/link";
 import { DivergenceMark } from "@/components/graphics/DivergenceMark";
+import { ExternalMark } from "@/components/ui/ActionLink";
 import { sections } from "@/content/sections";
 import { site } from "@/content/site";
 import { Container } from "./Container";
 
-export function SiteFooter() {
-  const { person, links } = site;
+const linkClass = "link-draw inline-flex min-h-12 min-w-11 items-center gap-2 text-fg-muted hover:text-fg";
 
+export function SiteFooter() {
   return (
     <footer className="border-t border-line py-14">
       <Container className="grid gap-10 md:grid-cols-12">
@@ -14,43 +16,39 @@ export function SiteFooter() {
             <DivergenceMark className="size-8" />
             {site.identity}
           </p>
-          <p className="mt-4 text-fg-muted">
-            Portfolio of {person.name}
-            {person.nameIsProvisional && " (provisional name)"} — {site.role}.
+          <p className="mt-4 max-w-prose text-fg-muted">
+            Portfolio of {site.person.name}, {site.role}.
           </p>
         </div>
 
-        <nav aria-label="Footer" className="md:col-span-5 md:col-start-6">
-          <ul className="grid items-start gap-x-8 sm:grid-cols-2">
+        <nav aria-label="Footer" className="md:col-span-4 md:col-start-7">
+          <ul className="grid grid-cols-2 gap-x-8">
             {sections.map((section) => (
               <li key={section.id}>
-                <a
-                  href={`#${section.id}`}
-                  className="inline-flex min-h-12 items-center text-fg-muted hover:text-fg"
-                >
-                  {section.title}
-                </a>
+                <Link href={`/#${section.id}`} className={linkClass}>
+                  {section.label}
+                </Link>
               </li>
             ))}
           </ul>
         </nav>
 
-        <div className="md:col-span-2 md:text-right">
-          {links.length > 0 && (
-            <ul>
-              {links.map((link) => (
-                <li key={link.href}>
-                  <a href={link.href} className="inline-flex min-h-12 items-center text-fg-muted hover:text-fg">
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          )}
-          <a href="#top" className="label inline-flex min-h-12 items-center text-fg-muted hover:text-fg">
-            Back to top ↑
-          </a>
-        </div>
+        <ul className="md:col-span-2">
+          {site.links.map((link) => (
+            <li key={link.href}>
+              <a href={link.href} target="_blank" rel="noopener noreferrer" className={linkClass}>
+                {link.label}
+                <ExternalMark />
+              </a>
+            </li>
+          ))}
+          <li>
+            {/* "#top" with no matching id scrolls to the top of any page. */}
+            <a href="#top" className={linkClass}>
+              Back to top <span aria-hidden="true">↑</span>
+            </a>
+          </li>
+        </ul>
       </Container>
     </footer>
   );

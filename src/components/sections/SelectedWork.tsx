@@ -1,18 +1,22 @@
+import { RidgeDivider } from "@/components/graphics/RidgeDivider";
 import { Container } from "@/components/layout/Container";
 import { Reveal } from "@/components/motion/Reveal";
 import { ProjectEntry } from "@/components/projects/ProjectEntry";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { projects } from "@/content/projects";
+import { section } from "@/content/sections";
 
-/** The project archive, on paper — the inverted surface that rises out of the hero. */
+const { chapter, title } = section("work");
+
+/** The Archive, on paper — the inverted surface that rises out of the hero. */
 export function SelectedWork() {
   return (
-    <section id="work" aria-labelledby="work-title" className="surface-paper relative -mt-px pt-12 pb-section md:pt-16">
-      <Container>
-        <SectionHeading id="work-title" chapter="02" eyebrow="Archive" title="Selected work">
+    <section id="work" aria-labelledby="work-title" className="surface-paper relative -mt-px pt-12 md:pt-16">
+      <Container className="pb-section">
+        <SectionHeading id="work-title" chapter={chapter} eyebrow="Archive" title={title}>
           <p>
-            Three projects open the archive. Full case studies are being written; until then, only
-            confirmed details appear here.
+            Three projects, each with a full case study: what the problem was, how the system works, the
+            decisions behind it, and where it falls short.
           </p>
         </SectionHeading>
 
@@ -26,6 +30,7 @@ export function SelectedWork() {
           ))}
         </ol>
       </Container>
+      <RidgeDivider to="ink" />
     </section>
   );
 }

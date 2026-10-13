@@ -1,28 +1,44 @@
 "use client";
 
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { useEffect, useId, useState } from "react";
+import Link from "next/link";
+import { useEffect, useId, useRef, useState } from "react";
 import { menuPanel } from "@/lib/motion";
-
-type NavLink = { href: string; label: string; chapter: string };
+import type { NavLink } from "./NavLinks";
 
 /**
- * Disclosure menu for viewports below `lg`. Closes on Escape and on navigation.
- * Under reduced motion the panel is a plain element: it mounts and unmounts
- * immediately, with no fade, translation or exit animation.
+ * Disclosure menu for viewports below `lg`.
+ * Closes on Escape (returning focus to the toggle), on navigation, and when
+ * focus or a press lands outside it. Under reduced motion the panel is a plain
+ * element: it mounts and unmounts immediately, with no animation.
  */
 export function MobileNav({ links }: { links: NavLink[] }) {
   const [open, setOpen] = useState(false);
   const panelId = useId();
+  const rootRef = useRef<HTMLDivElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
   const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     if (!open) return;
+
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
+      if (event.key !== "Escape") return;
+      setOpen(false);
+      toggleRef.current?.focus();
     };
+    const onOutside = (event: Event) => {
+      if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
+    };
+
     window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
+    document.addEventListener("pointerdown", onOutside);
+    document.addEventListener("focusin", onOutside);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener("pointerdown", onOutside);
+      document.removeEventListener("focusin", onOutside);
+    };
   }, [open]);
 
   const panelProps = {
@@ -34,23 +50,24 @@ export function MobileNav({ links }: { links: NavLink[] }) {
   const list = (
     <ul className="mx-auto max-w-page px-gutter py-4">
       {links.map((link) => (
-        <li key={link.href} className="border-t border-line first:border-t-0">
-          <a
+        <li key={link.id} className="border-t border-line first:border-t-0">
+          <Link
             href={link.href}
             onClick={() => setOpen(false)}
             className="flex min-h-14 items-baseline gap-4 py-4 font-display text-heading"
           >
             <span className="label text-fg-faint">{link.chapter}</span>
             {link.label}
-          </a>
+          </Link>
         </li>
       ))}
     </ul>
   );
 
   return (
-    <div className="lg:hidden">
+    <div ref={rootRef} className="lg:hidden">
       <button
+        ref={toggleRef}
         type="button"
         aria-expanded={open}
         aria-controls={panelId}
@@ -60,10 +77,10 @@ export function MobileNav({ links }: { links: NavLink[] }) {
         {open ? "Close" : "Menu"}
         <span aria-hidden="true" className="relative block h-2.5 w-5">
           <span
-            className={`absolute inset-x-0 top-0 h-px bg-current transition-transform duration-(--duration-hover) ease-settle ${open ? "translate-y-[5px] rotate-45" : ""}`}
+            className={`absolute inset-x-0 top-0 h-px bg-current transition-transform duration-(--duration-hover) ease-entrance ${open ? "translate-y-[5px] rotate-45" : ""}`}
           />
           <span
-            className={`absolute inset-x-0 bottom-0 h-px bg-current transition-transform duration-(--duration-hover) ease-settle ${open ? "-translate-y-[4px] -rotate-45" : ""}`}
+            className={`absolute inset-x-0 bottom-0 h-px bg-current transition-transform duration-(--duration-hover) ease-entrance ${open ? "-translate-y-[4px] -rotate-45" : ""}`}
           />
         </span>
       </button>
