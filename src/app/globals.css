@@ -1,0 +1,93 @@
+@import "tailwindcss";
+@import "../styles/tokens.css";
+
+@layer base {
+  html {
+    scroll-padding-top: calc(var(--spacing-header) + 1rem);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  body {
+    font-family: var(--font-sans);
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: var(--color-cinnabar);
+    color: var(--color-parchment);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 4px;
+  }
+}
+
+/* Technical label: mono, uppercase, tracked. */
+@utility label {
+  font-family: var(--font-mono);
+  font-size: var(--text-label);
+  line-height: var(--text-label--line-height);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/*
+ * First-screen entrance. Pure CSS so it runs (and ends visible) without
+ * JavaScript. Stagger with the --delay custom property.
+ */
+@keyframes settle {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+}
+
+@keyframes unmask {
+  from {
+    transform: translateY(105%);
+  }
+}
+
+@keyframes draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+
+@utility anim-settle {
+  animation: settle var(--duration-reveal) var(--ease-settle) var(--delay, 0ms) both;
+}
+
+/* Masked headline line: wrap text in .mask-line > span. */
+@utility mask-line {
+  display: block;
+  overflow: hidden;
+  padding-block: 0.04em;
+
+  & > span {
+    display: block;
+    animation: unmask var(--duration-headline) var(--ease-settle) var(--delay, 0ms) both;
+  }
+}
+
+/* Stroke draw-on; requires pathLength="1" on the element. */
+@utility anim-draw {
+  stroke-dasharray: 1;
+  animation: draw var(--duration-draw) var(--ease-ink) var(--delay, 0ms) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+  }
+}

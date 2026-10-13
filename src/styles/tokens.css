@@ -1,0 +1,95 @@
+/*
+ * Design tokens for THE UNORTHODOX PATH.
+ * Source of truth for colour, type, spacing and motion. See docs/DESIGN_SYSTEM.md.
+ * Motion values are mirrored in src/lib/motion.ts — change both together.
+ */
+
+@theme {
+  /* Core palette */
+  --color-ink: #101110;
+  --color-ink-raised: #191b19;
+  --color-ink-mist: #232623;
+  --color-parchment: #e8e0d0;
+  --color-parchment-deep: #d8ceb9;
+  --color-cinnabar: #9f292d;
+  --color-jade: #52745b;
+  --color-silver: #a9aaa3;
+
+  /* Derived tints — exist only to meet text contrast on a given surface */
+  --color-cinnabar-hover: #b33338;
+  --color-cinnabar-bright: #cf5f5c; /* accent text on ink, 4.9:1 */
+  --color-jade-bright: #8fb199; /* focus + small text on ink, 8:1 */
+  --color-silver-dim: #7d7e78; /* tertiary text on ink, 4.6:1 */
+  --color-ink-soft: #4b4d47; /* secondary text on parchment */
+  --color-ink-faint: #5d5f58; /* tertiary text on parchment, 5:1 */
+
+  /* Type scale (fluid between 360px and 1440px) */
+  --text-display: clamp(2.5rem, 11.5vw, 9rem);
+  --text-display--line-height: 0.88;
+  --text-title: clamp(2.25rem, 5.2vw, 4.25rem);
+  --text-title--line-height: 1;
+  --text-heading: clamp(1.625rem, 2.8vw, 2.5rem);
+  --text-heading--line-height: 1.08;
+  --text-lead: clamp(1.125rem, 1.5vw, 1.375rem);
+  --text-lead--line-height: 1.5;
+  --text-label: 0.8125rem;
+  --text-label--line-height: 1.4;
+
+  /* Layout */
+  --spacing-gutter: clamp(1.25rem, 4vw, 3rem);
+  --spacing-section: clamp(5rem, 11vw, 9.5rem);
+  --spacing-header: 4.5rem;
+  --container-page: 82rem;
+  --container-prose: 36rem;
+
+  /* Motion */
+  --ease-settle: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-ink: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+@theme inline {
+  --font-display: var(--font-cormorant), "Iowan Old Style", Georgia, serif;
+  --font-sans: var(--font-geist-sans), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  /* Semantic colours — resolved by the nearest .surface-* ancestor */
+  --color-surface: var(--surface);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-fg-faint: var(--fg-faint);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+}
+
+:root {
+  --duration-press: 120ms;
+  --duration-hover: 200ms;
+  --duration-reveal: 700ms;
+  --duration-headline: 900ms;
+  --duration-draw: 2400ms;
+}
+
+/* Surfaces: ink (default ground) and paper (inverted material) */
+.surface-ink {
+  --surface: var(--color-ink);
+  --fg: var(--color-parchment);
+  --fg-muted: var(--color-silver);
+  --fg-faint: var(--color-silver-dim);
+  --line: rgb(232 224 208 / 0.16);
+  --accent: var(--color-cinnabar-bright);
+  --focus: var(--color-jade-bright);
+  background-color: var(--surface);
+  color: var(--fg);
+}
+
+.surface-paper {
+  --surface: var(--color-parchment);
+  --fg: var(--color-ink);
+  --fg-muted: var(--color-ink-soft);
+  --fg-faint: var(--color-ink-faint);
+  --line: rgb(16 17 16 / 0.22);
+  --accent: var(--color-cinnabar);
+  --focus: var(--color-cinnabar);
+  background-color: var(--surface);
+  color: var(--fg);
+}
