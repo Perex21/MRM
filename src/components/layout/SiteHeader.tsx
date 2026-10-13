@@ -13,13 +13,13 @@ const links = sections.map((section) => ({
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-ink/90 backdrop-blur-sm">
-      <Container className="flex h-(--spacing-header) items-center justify-between gap-6">
+      <Container className="flex h-(--spacing-header) items-center justify-between gap-3 lg:gap-6">
         <a href="#top" className="label inline-flex min-h-12 items-center gap-3">
           <DivergenceMark className="size-7" />
-          <span>{site.identity}</span>
+          <span className="whitespace-nowrap">{site.identity}</span>
         </a>
 
-        <nav aria-label="Sections" className="hidden md:block">
+        <nav aria-label="Sections" className="hidden lg:block">
           <ul className="flex items-center gap-4">
             {links.map((link) => (
               <li key={link.href}>

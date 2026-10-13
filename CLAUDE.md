@@ -65,6 +65,8 @@ hiring managers, engineering teams, freelance clients. Details live in `docs/`.
   reveals use `Reveal`, which renders visible and only hides below-fold content after
   hydration. Never server-render content at `opacity: 0`.
 - `prefers-reduced-motion: reduce` shows everything immediately and stops nonessential motion.
+  Remove the animation rather than zeroing its distance: no fade, translation or exit
+  transition (see `MobileNav`). Gate decorative transforms with `motion-safe:`.
 
 ## Validation (run all three before calling work done)
 

@@ -10,7 +10,7 @@ type ActionLinkProps = {
 };
 
 const base =
-  "group inline-flex min-h-12 items-center gap-3 label transition-[background-color,color,transform] duration-(--duration-hover) ease-settle active:translate-y-px active:duration-(--duration-press)";
+  "group inline-flex min-h-12 items-center gap-3 label transition-[background-color,color,transform] duration-(--duration-hover) ease-settle active:duration-(--duration-press) motion-safe:active:translate-y-px";
 
 const variants = {
   seal: "bg-cinnabar px-6 text-parchment hover:bg-cinnabar-hover",
@@ -24,7 +24,7 @@ export function ActionLink({ href, children, variant = "seal", className }: Acti
       {children}
       <span
         aria-hidden="true"
-        className="transition-transform duration-(--duration-hover) ease-settle group-hover:translate-x-1"
+        className="transition-transform duration-(--duration-hover) ease-settle motion-safe:group-hover:translate-x-1"
       >
         →
       </span>

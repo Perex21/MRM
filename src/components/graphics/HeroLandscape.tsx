@@ -36,28 +36,32 @@ export function HeroLandscape({ className }: { className?: string }) {
         d="M0 900V700c100-20 180-60 260-40s160 80 260 40 160-90 260-50 160 90 260 50 180-80 260-40 100 40 140 20v220z"
       />
 
-      {/* The orthodox road: straight, dashed, uninterrupted. */}
-      <path
-        d="M380 900V0"
-        fill="none"
-        stroke="var(--color-silver-dim)"
-        strokeWidth="1"
-        strokeDasharray="2 10"
-        vectorEffect="non-scaling-stroke"
-      />
-      {/* The path that leaves it. */}
-      <path
-        d="M380 900c20-60 140-80 220-130s-40-70 80-110 220-20 180-80 140-60 200-80"
-        pathLength={1}
-        fill="none"
-        stroke="var(--color-parchment)"
-        strokeOpacity="0.75"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        vectorEffect="non-scaling-stroke"
-        className="anim-draw"
-        style={{ "--delay": "500ms" } as React.CSSProperties}
-      />
+      {/* Below md the crop leaves only a stray fragment of these lines, which
+          cuts across the role statement — so they are shown from md up. */}
+      <g className="hidden md:block">
+        {/* The orthodox road: straight, dashed, uninterrupted. */}
+        <path
+          d="M380 900V0"
+          fill="none"
+          stroke="var(--color-silver-dim)"
+          strokeWidth="1"
+          strokeDasharray="2 10"
+          vectorEffect="non-scaling-stroke"
+        />
+        {/* The path that leaves it. */}
+        <path
+          d="M380 900c20-60 140-80 220-130s-40-70 80-110 220-20 180-80 140-60 200-80"
+          pathLength={1}
+          fill="none"
+          stroke="var(--color-parchment)"
+          strokeOpacity="0.75"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          vectorEffect="non-scaling-stroke"
+          className="anim-draw"
+          style={{ "--delay": "500ms" } as React.CSSProperties}
+        />
+      </g>
 
       <path
         fill="var(--color-parchment)"

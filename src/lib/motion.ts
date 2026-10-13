@@ -23,3 +23,11 @@ export const reveal = {
   shown: { opacity: 1, y: 0 },
   transition: { duration: duration.reveal, ease: ease.settle },
 } as const;
+
+/** Mobile menu panel: short fade and settle from just above. */
+export const menuPanel = {
+  initial: { opacity: 0, y: -8 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -8 },
+  transition: { duration: duration.hover, ease: ease.settle },
+} as const;

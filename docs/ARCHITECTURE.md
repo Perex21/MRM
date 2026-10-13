@@ -57,6 +57,13 @@ Everything is a server component except:
 - **Hero entrance is CSS**, not Motion, so it works without JavaScript.
 - **`Reveal` never server-renders hidden content.** It hides only elements below the fold
   after hydration, then reveals them on intersect.
+- **Navigation breakpoint is `lg` (1024px).** At 768px the five desktop links plus the
+  wordmark do not fit; the wordmark was silently wrapping to two lines there. Below `lg`
+  the disclosure menu is used.
+- **The hero's road and path lines render from `md` up.** Below that the SVG crop leaves
+  only a stray fragment that crossed the role statement.
+- **Under reduced motion `MobileNav` renders a plain `<nav>`** with no `AnimatePresence`,
+  so there is no fade, translation or exit animation to wait for.
 - **Hero disc is a positioned element**, not part of the landscape SVG, so the SVG's
   `slice` cropping can never put cinnabar behind body text.
 - **No year in the footer**: reading the current time in a server component conflicts with
@@ -64,11 +71,30 @@ Everything is a server component except:
 - **Scaffold in a subfolder, then moved up**: `create-next-app` rejects the uppercase
   directory name `MURIM`. The package is named `unorthodox-path`.
 
+## Dependency advisories
+
+All five `npm audit` entries are one advisory seen through its dependency chain:
+
+- **Advisory:** GHSA-vfj7-8cjw-p6xm — `braces` ≤ 3.0.3, stack-exhaustion denial of service
+  on deeply nested brace patterns (CVSS 7.5).
+- **Path:** `eslint-config-next@16.4.0` → `@next/eslint-plugin-next@16.4.0` →
+  `fast-glob@3.3.1` → `micromatch@4.0.8` → `braces@3.0.3`.
+- **No compatible fix exists.** 3.0.3 is the latest published `braces`, so an override
+  cannot help. The only fix npm offers is `--force`, which downgrades `eslint-config-next`
+  to 14.2.35 — two majors behind the installed Next.js 16. Not applied.
+- **Exposure:** development tooling only. `npm audit --omit=dev` reports 0 vulnerabilities;
+  nothing on this path ships in the built site. Triggering it needs a hostile glob pattern
+  fed to the linter, which here only reads patterns from this repository's own config.
+- **Action:** accepted for now. Re-run `npm audit` when `braces` or `eslint-config-next`
+  publishes a new version.
+
 ## Known uncertainties
 
 - The project lives in a OneDrive-synced folder. `node_modules` and `.next` there can be slow
   or lock files during sync; moving the project out of OneDrive is advisable.
-- No git repository has been initialised.
-- `npm install` reported 5 high-severity advisories in the dependency tree; not triaged.
+- Git: the repository was initialised by the owner after mission 001 (one commit,
+  `Foundation MRM`, on `main`) with a GitHub remote, `origin` → `Perex21/MRM`. The mission
+  001.1 changes are uncommitted in the working tree.
+- `npm audit` (run 2026-10-13) reports 5 high-severity entries. See "Dependency advisories".
 - No tests exist yet; there is no logic complex enough to warrant them.
 - No deployment target is chosen.

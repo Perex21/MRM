@@ -59,7 +59,7 @@ Scale (fluid): `text-display` 40–144px · `text-title` 36–68px · `text-head
 - Section rhythm `py-section` = `clamp(5rem, 11vw, 9.5rem)`.
 - Header height `--spacing-header` (4.5rem); `scroll-padding-top` accounts for it.
 - 12-column grid at `md`/`lg`; single column below. Spacing otherwise uses Tailwind's 4px scale.
-- Breakpoints: Tailwind defaults. Mobile menu below `md` (768px).
+- Breakpoints: Tailwind defaults. Disclosure menu below `lg` (1024px); inline nav from `lg`.
 
 ## Borders and structure
 
@@ -87,7 +87,7 @@ Extend the motif before introducing any new symbol.
 | Focus | 2px outline in the surface's focus colour, 4px offset (`:focus-visible`) |
 | Active | 1px downward press, 120ms |
 | Disabled | Not used yet. Unavailable actions are omitted, not greyed out |
-| Reduced motion | No animation; everything visible immediately |
+| Reduced motion | No animation, no hover/press movement; everything visible immediately. Colour changes remain |
 
 Interactive targets are at least 48px tall.
 
