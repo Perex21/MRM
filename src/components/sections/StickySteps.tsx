@@ -20,6 +20,7 @@ export type Step = {
 type StickyStepsProps = {
   headingId: string;
   chapter: string;
+  scene: string;
   title: string;
   intro: string;
   steps: Step[];
@@ -40,7 +41,7 @@ const stepId = (index: number) => `principle-${index + 1}`;
  * Under reduced motion the rail is drawn full and stops moving; the active
  * marker still updates, without animation.
  */
-export function StickySteps({ headingId, chapter, title, intro, steps }: StickyStepsProps) {
+export function StickySteps({ headingId, chapter, scene, title, intro, steps }: StickyStepsProps) {
   const [active, setActive] = useState(0);
   const listRef = useRef<HTMLOListElement>(null);
   const prefersReducedMotion = useReducedMotion();
@@ -76,7 +77,9 @@ export function StickySteps({ headingId, chapter, title, intro, steps }: StickyS
       <div className="lg:sticky lg:top-[calc(var(--spacing-header)+3rem)] lg:col-span-5 lg:self-start">
         <p className="label flex items-center gap-3 text-fg-faint">
           <DivergenceMark variant="glyph" className="size-5 text-accent" />
-          <span>{chapter} — Method</span>
+          <span>
+            {chapter} — {scene}
+          </span>
         </p>
         <h2 id={headingId} className="mt-6 font-display text-title font-medium text-balance">
           <MaskedWords text={title} />

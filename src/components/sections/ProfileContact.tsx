@@ -1,4 +1,5 @@
 import { DivergenceMark } from "@/components/graphics/DivergenceMark";
+import { BowDivider } from "@/components/graphics/BowDivider";
 import { Container } from "@/components/layout/Container";
 import { Magnetic } from "@/components/motion/Magnetic";
 import { MaskedWords } from "@/components/motion/MaskedWords";
@@ -11,14 +12,18 @@ import { site } from "@/content/site";
 const profile = section("profile");
 const contact = section("contact");
 
-/** Professional profile: who this is and where the public record lives. */
+/**
+ * The Record — professional profile, on paper. The quietest scene: the world
+ * is covered, nothing moves but the reveal, and the facts are easy to scan.
+ * Its foot bows away into the landscape of the Destination.
+ */
 export function Profile() {
   const { person, links, resume } = site;
 
   return (
-    <section id="profile" aria-labelledby="profile-title" className="relative -mt-px bg-ink pt-section">
-      <Container>
-        <SectionHeading id="profile-title" chapter={profile.chapter} eyebrow="Record" title={profile.title}>
+    <section id="profile" aria-labelledby="profile-title" className="surface-paper relative -mt-px">
+      <Container className="pt-section pb-section">
+        <SectionHeading id="profile-title" chapter={profile.chapter} eyebrow={profile.scene} title={profile.title}>
           <p>
             {person.name} is an {site.role.replace("&", "and")}. The work shown here spans security tooling,
             compliance automation and web engineering, and the code behind it is public wherever that is
@@ -59,19 +64,26 @@ export function Profile() {
   );
 }
 
-/** Contact: one clear action, pointed at a destination the owner actually reads. */
+/**
+ * The Destination — contact. The journey resolves: the world behind settles,
+ * the path reaches the horizon and the sun stands where it ends. One clear
+ * action, pointed at a destination the owner actually reads.
+ */
 export function Contact() {
   const { primary, email } = site.contact;
   const secondary = site.links.filter((link) => link.href !== primary.href);
 
+  // Tall enough that the settled landscape and the sun stand below the invitation.
   return (
-    <section id="contact" aria-labelledby="contact-title" className="py-section">
-      <Container>
+    <section id="contact" aria-labelledby="contact-title" className="min-h-svh pb-[clamp(12rem,38vh,22rem)]">
+      {/* The Record's paper bends away, opening onto the settled landscape. */}
+      <BowDivider />
+      <Container className="pt-section">
         <div className="grid gap-x-12 gap-y-10 lg:grid-cols-12">
           <p className="label flex items-start gap-3 text-fg-faint lg:col-span-3 lg:pt-4">
             <DivergenceMark variant="glyph" className="size-5 text-accent" />
             <span>
-              {contact.chapter} — {contact.title}
+              {contact.chapter} — {contact.scene}
             </span>
           </p>
 

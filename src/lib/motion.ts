@@ -54,3 +54,11 @@ export const stagger = {
   /** Words in a masked headline. */
   words: 0.07,
 } as const;
+
+/**
+ * The opening gust, in milliseconds after navigation start (performance.now()
+ * and document.timeline share that origin). The canvas wind, the mist shove
+ * and the CSS name reveal are all timed against it, so they stay in step even
+ * when hydration is late. Mirrored as --gust-start in tokens.css.
+ */
+export const GUST = { start: 150, duration: 1700 } as const;

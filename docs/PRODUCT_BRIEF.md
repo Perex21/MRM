@@ -29,16 +29,17 @@ Divergence: a straight path and one stroke that leaves it.
 
 | # | Section / route | Anchor or path | Content |
 | --- | --- | --- | --- |
-| 01 | Hero — The Threshold | `/` | Identity, name, role, statement, two actions, the seal |
-| 02 | Selected work — The Archive | `/#work` | Three project rows linking to case studies |
-| 03 | Engineering approach | `/#approach` | Five principles, each tied to a project |
-| 04 | Technical capabilities | `/#capabilities` | Five groups, each item linked to the work that used it |
-| 05 | Professional profile | `/#profile` | GitHub and LinkedIn; résumé when one exists |
-| 06 | Contact | `/#contact` | One primary action to LinkedIn |
+| 01 | The Arrival — hero | `/` | The gust, the name, role, statement, two actions, the seal |
+| 02 | The Path — engineering approach | `/#approach` | Five principles, each tied to a project |
+| 03 | The Archive — selected work | `/#work` | Three project discoveries linking to case studies |
+| 04 | The Disciplines — technical capabilities | `/#capabilities` | Five hanging scrolls, each item linked to the work that used it |
+| 05 | The Record — professional profile | `/#profile` | GitHub and LinkedIn; résumé when one exists |
+| 06 | The Destination — contact | `/#contact` | One primary action to LinkedIn |
 | — | Case studies | `/work/[slug]` ×3 | Problem, flow schematic, architecture, decisions, evaluation, limits, stack |
 | — | Not found | any unknown URL | Way back to the start and the work |
 
-Work is placed before the approach so evidence comes first.
+The approach now precedes the work, following the journey the owner described; the hero's
+primary action still goes straight to the work.
 
 ## Principles that shaped the content
 

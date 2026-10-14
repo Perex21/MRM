@@ -9,6 +9,7 @@
   --color-ink: #101110;
   --color-ink-raised: #191b19;
   --color-ink-mist: #232623;
+  --color-ink-deep: #0b0c0b; /* nearest range of the world layer */
   --color-parchment: #e8e0d0;
   --color-parchment-deep: #d8ceb9;
   --color-cinnabar: #9f292d;
@@ -27,6 +28,9 @@
   /* Type scale (fluid between 360px and 1440px) */
   --text-display: clamp(2.5rem, 11.5vw, 9rem);
   --text-display--line-height: 0.88;
+  /* The name in the Arrival: one line, as large as the narrowest screen allows */
+  --text-name: clamp(3.25rem, 13.5vw, 9.5rem);
+  --text-name--line-height: 0.9;
   --text-title: clamp(2.25rem, 5.2vw, 4.25rem);
   --text-title--line-height: 1;
   --text-heading: clamp(1.625rem, 2.8vw, 2.5rem);
@@ -69,6 +73,7 @@
   --duration-reveal: 650ms;
   --duration-headline: 900ms;
   --duration-draw: 2400ms;
+  --gust-start: 150ms; /* opening gust; mirrors GUST in lib/motion.ts */
 }
 
 /* Surfaces: ink (default ground) and paper (inverted material) */

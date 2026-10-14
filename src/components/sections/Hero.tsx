@@ -1,33 +1,38 @@
-import { HeroLandscape } from "@/components/graphics/HeroLandscape";
 import { Seal } from "@/components/graphics/Seal";
 import { Container } from "@/components/layout/Container";
 import { Magnetic } from "@/components/motion/Magnetic";
 import { ActionLink } from "@/components/ui/ActionLink";
 import { site } from "@/content/site";
 
-const delay = (ms: number) => ({ "--delay": `${ms}ms` }) as React.CSSProperties;
+/** Delay measured from the opening gust (--gust-start), the shared clock of the Arrival. */
+const atGust = (ms: number) => ({ "--delay": `calc(var(--gust-start) + ${ms}ms)` }) as React.CSSProperties;
 
 /**
- * The Threshold. Layering, back to front: landscape, seal, then text.
+ * The Arrival. The landscape behind it is the fixed world layer (World); the
+ * gust is drawn by WindGust. This section holds the composition the gust
+ * resolves into.
  *
- * Opening sequence (all CSS, so it plays and ends visible without JavaScript):
- * label → title lines rise from their masks one after another → the seal
- * lands → the path walks the straight road, marks the point where it
- * diverges, and leaves for the seal → role, statement and actions settle.
+ * Sequence (all CSS, timed against --gust-start, so it plays and ends visible
+ * without JavaScript; the canvas wind joins it when scripts are ready):
+ *   ~0.3s  the brand line is wiped in from upwind
+ *   ~0.6s  the gust front reaches the name: its letters are blown in one after
+ *          another as the front passes, while a band of mist crosses them
+ *   ~1.0s  the seal lands where the gust has passed
+ *   ~1.3s  role, statement and actions settle into the stilled air
+ *
  * The text container ignores pointer events and each text block opts back in
- * at its own width, so the seal stays pressable where the title passes over it.
+ * at its own width, so the seal stays pressable where the name passes over it.
  */
 export function Hero() {
   const { person, contact } = site;
+  const letters = [...person.name.toUpperCase()];
 
   return (
     <section aria-labelledby="hero-title" className="relative isolate overflow-hidden">
-      <HeroLandscape className="absolute inset-0 -z-10" />
-
-      {/* Sits behind the title only, where parchment-on-cinnabar still reads. */}
+      {/* Sits behind the name only, where parchment-on-cinnabar still reads. */}
       <div
-        className="anim-settle absolute top-[clamp(1.25rem,10vw,9.5rem)] right-(--spacing-gutter) size-[clamp(6rem,18vw,16.5rem)] md:right-[11vw]"
-        style={delay(320)}
+        className="anim-settle absolute top-[clamp(1.25rem,10vw,9.5rem)] right-(--spacing-gutter) size-[clamp(4.5rem,18vw,16.5rem)] md:right-[11vw]"
+        style={atGust(850)}
       >
         <Seal className="size-full" />
         <p
@@ -38,29 +43,33 @@ export function Hero() {
         </p>
       </div>
 
-      <Container className="pointer-events-none relative flex min-h-[calc(92svh-var(--spacing-header))] flex-col pt-[clamp(2rem,6vh,5rem)] pb-[clamp(9rem,22vh,14rem)] *:pointer-events-auto">
-        <p className="label anim-settle w-fit max-w-[13.75rem] text-fg-muted sm:max-w-none">
-          Portfolio of {person.name}
+      {/* Phones: content starts below the seal. Wider: the composition is centred in the viewport. */}
+      <Container className="pointer-events-none relative flex min-h-[calc(100svh-var(--spacing-header))] flex-col pt-[calc(clamp(1.25rem,10vw,9.5rem)+clamp(4.5rem,18vw,16.5rem)+1.25rem)] pb-[clamp(7rem,20vh,12rem)] *:pointer-events-auto md:justify-center md:pt-[clamp(2rem,6vh,5rem)]">
+        <p
+          className="anim-wipe w-fit font-display text-[clamp(1rem,2.1vw,1.75rem)] font-medium tracking-[0.42em] text-fg-muted uppercase"
+          style={atGust(150)}
+        >
+          {site.identity}
         </p>
 
-        <h1
-          id="hero-title"
-          className="pointer-events-none! mt-8 font-display text-display font-medium uppercase *:pointer-events-auto *:w-fit"
-        >
-          <span className="mask-line pl-[0.2em] text-[max(0.3em,0.9375rem)] tracking-[0.32em] text-fg-muted">
-            <span>The</span>
-          </span>
-          <span className="mask-line" style={delay(140)}>
-            <span>Unorthodox</span>
-          </span>
-          <span className="mask-line ml-[0.9em] md:ml-[1.4em]" style={delay(280)}>
-            <span>Path</span>
+        <h1 id="hero-title" className="mt-5 w-fit font-display text-name font-medium uppercase">
+          <span className="sr-only">{person.name}</span>
+          <span aria-hidden="true" className="relative inline-block whitespace-nowrap">
+            {letters.map((char, index) => (
+              <span key={index} className="gust-letter" style={{ "--i": index } as React.CSSProperties}>
+                {char === " " ? " " : char}
+              </span>
+            ))}
+            <span className="gust-mist" />
           </span>
         </h1>
 
-        <div className="anim-settle mt-10 max-w-prose" style={delay(820)}>
-          <p className="label text-accent">{site.role}</p>
-          <p className="mt-4 text-lead text-fg">{site.statement}</p>
+        <p className="anim-settle mt-6 font-display text-heading text-fg-muted" style={atGust(1000)}>
+          {site.role}
+        </p>
+
+        <div className="anim-settle mt-8 max-w-prose" style={atGust(1150)}>
+          <p className="text-lead text-fg">{site.statement}</p>
 
           <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-4">
             <Magnetic>
@@ -75,9 +84,9 @@ export function Hero() {
         <p
           aria-hidden="true"
           className="label anim-settle pointer-events-none! absolute top-[clamp(2rem,6vh,5rem)] right-(--spacing-gutter) hidden text-fg-faint [writing-mode:vertical-rl] lg:block"
-          style={delay(1000)}
+          style={atGust(1300)}
         >
-          01 — Introduction
+          01 — The Arrival
         </p>
       </Container>
     </section>

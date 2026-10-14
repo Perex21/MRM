@@ -31,10 +31,11 @@ src/
   components/
     layout/       Container, SiteHeader, NavLinks (client), MobileNav (client), SiteFooter
     sections/     Hero, SelectedWork, Approach, StickySteps (client), Capabilities, ProfileContact
-    projects/     ProjectEntry, ProjectArt, CaseStudy, Pipeline
+    projects/     ProjectEntry, ProjectArt, CaseStudy, Pipeline; ArtField, ProjectDetails (client)
     ui/           ActionLink, SectionHeading
-    graphics/     DivergenceMark, Seal, HeroLandscape, BowDivider, RippleDivider (client); RidgeDivider
-    motion/       Reveal, MaskedWords, Tilt, Magnetic (client); RollText (CSS only)
+    graphics/     DivergenceMark, Seal, BowDivider, RippleDivider (client); RidgeDivider
+    motion/       Reveal, MaskedWords, Magnetic (client); RollText (CSS only)
+    world/        World, Drift, WindGust (client) — the home page's landscape and opening gust
   content/        site.ts, sections.ts, projects.ts, profile.ts   ← all public copy and facts
   lib/            cn.ts, motion.ts
   styles/         tokens.css                                      ← design tokens
@@ -96,6 +97,32 @@ docs/
   `cacheComponents` prerendering.
 - **Hero disc is positioned in CSS**, not inside the landscape SVG, so cropping can never put
   cinnabar behind body text. The landscape's road and path lines render from `md` up.
+
+## The journey (2026-10-14)
+
+- **Section order** follows the journey: hero, approach, work, capabilities, profile, contact
+  (`content/sections.ts`, which also names each scene).
+- **`World`** is a fixed layer rendered only on the home page. Three procedurally generated
+  ranges (`lib/landscape.ts`, deterministic, so server and client agree), two mist banks, the
+  path and the sun. Scene values are interpolated over the scroll position of each section's
+  top, re-measured by a `ResizeObserver`. Stops live in a motion value, so transforms read the
+  latest layout without re-rendering.
+- **`WindGust`** is a full-viewport canvas above the content (`pointer-events: none`) that
+  plays once and unmounts. It is timed on the navigation clock, the same origin as CSS
+  animations, so it stays in step with the CSS name reveal; if hydration arrives too late it
+  skips itself. It sets `data-gust` on `<html>` (`playing`, `played`, `skipped`) for
+  diagnosis. Development builds accept `?gust=<ms>` to hold the gust still at that moment;
+  the branch is removed from production builds.
+- **`Drift`** keeps a few motes in the world. Its animation loop runs only while the gust's
+  tail or the visitor's scrolling moves them, then stops.
+- **`ViewTransition`** pairs each archive artwork with its case-study header. React 19.3 and
+  Next 16 support it without configuration; browsers without the View Transitions API simply
+  navigate.
+- **Client navigation**: the App Router keeps the home page in a hidden React Activity when a
+  case study opens, so the world layer is `display: none` there and its effects are suspended.
+- **Rendering choice**: canvas 2D for the wind (ribbons need per-frame gradient strokes; a few
+  hundred primitives), SVG for the landscape (crisp at any size, transformable), CSS for the
+  name reveal (works without JavaScript). WebGL was not needed.
 
 ## Motion upgrade (2026-10-14)
 

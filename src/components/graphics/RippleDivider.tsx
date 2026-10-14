@@ -11,14 +11,16 @@ const layers = [
 ] as const;
 
 /**
- * Section hand-off from paper (this section) into ink (the next): three ink
- * ridges rise like layers of distant range. While the seam is low in the
- * viewport the layers stand apart; as it scrolls up they close into one
- * ridgeline. Place as the last child of the paper section.
+ * Section hand-off into the surface of the next section: three ridges of
+ * that surface rise like layers of distant range. While the seam is low in
+ * the viewport the layers stand apart; as it scrolls up they close into one
+ * ridgeline. Place as the last child of the section above.
  *
  * Renders closed without JavaScript; stays closed under reduced motion.
  */
-export function RippleDivider() {
+const fills = { ink: "var(--color-ink)", paper: "var(--color-parchment)" } as const;
+
+export function RippleDivider({ to = "ink" }: { to?: keyof typeof fills }) {
   const ref = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end 55%"] });
@@ -30,18 +32,18 @@ export function RippleDivider() {
       aria-hidden="true"
       className="relative -mb-px h-[clamp(4rem,9vw,8rem)]"
       // Solid strip at the foot, so rounding can never show a paper hairline at the seam.
-      style={{ backgroundImage: "linear-gradient(to top, var(--color-ink) 2px, transparent 2px)" }}
+      style={{ backgroundImage: `linear-gradient(to top, ${fills[to]} 2px, transparent 2px)` }}
     >
       {layers.map((layer) => (
-        <Layer key={layer.d} {...layer} open={open} />
+        <Layer key={layer.d} {...layer} open={open} fill={fills[to]} />
       ))}
     </div>
   );
 }
 
-type LayerProps = (typeof layers)[number] & { open: MotionValue<number> };
+type LayerProps = (typeof layers)[number] & { open: MotionValue<number>; fill: string };
 
-function Layer({ d, opacity, spread, open }: LayerProps) {
+function Layer({ d, opacity, spread, open, fill }: LayerProps) {
   const y = useTransform(open, (o) => o * spread);
   return (
     <motion.svg
@@ -50,7 +52,7 @@ function Layer({ d, opacity, spread, open }: LayerProps) {
       className="absolute inset-0 size-full"
       style={{ y }}
     >
-      <path d={d} fill="var(--color-ink)" fillOpacity={opacity} />
+      <path d={d} fill={fill} fillOpacity={opacity} />
     </motion.svg>
   );
 }

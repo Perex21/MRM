@@ -35,18 +35,31 @@ Verification in that session:
 - Verified in the browser at 360, 390, 1024 and 1440 (seen) and 768 (measured); reduced motion
   checked by simulating the preference for scripts — the CSS media query was not toggled.
 
+### Mission 004 — the journey
+- The Arrival: a canvas gust that carries the name in, letter by letter, then dissipates.
+- One fixed world layer travelled through by scrolling; scenes reordered into a journey.
+- Archive discoveries: per-project pointer responses, "How it works" flow plates, artwork
+  morphing into the case study. Disciplines as hanging scrolls. The Destination's sun.
+- Verified: production gust played (`data-gust` went `playing` → `played`, no console errors);
+  gust frames inspected frozen at 1440 and 390; resting hero at 1440, 390 and 360; every scene
+  at 1440; scroll down to the Destination and back up returns the world exactly; reduced motion
+  by script-level simulation; 20 route × width combinations measured.
+
 ## Not yet verified — do these first
 
 1. **Reduced motion in a real browser.** The test browser cannot emulate the preference.
-   Turn on the OS setting and check: content visible at once, menu opens instantly, seal
-   changes without animation, no ridge movement on scroll.
-2. **Case-study pages on a phone**, especially the flow schematic. Measured, not seen.
-3. **768 and 1024 by eye** for the new sections.
-4. **No-JavaScript rendering.** The server HTML contains no hidden content (checked), but the
+   Turn on the OS setting and check: no gust, the name visible at once, a still landscape,
+   menu opens instantly, seal changes without animation.
+2. **The live gust at full frame rate**, on a real phone and a desktop. The test browser
+   throttles animation frames, so the gust was inspected frozen, not watched in motion.
+3. **Scroll performance on a mid-range phone** with the world layer and drift active.
+4. **Case-study pages on a phone**, especially the flow schematic. Measured, not seen.
+5. **768 and 1024 by eye** for the new scenes (measured only).
+6. **No-JavaScript rendering.** The server HTML contains no hidden content (checked), but the
    page was not loaded with scripts disabled.
-5. **Screen reader pass** and an automated audit (axe, Lighthouse).
-6. **Other browsers** — only one Chromium-based browser was used.
-7. **HTTP status for unknown case-study slugs.** They render the 404 page with `noindex` but
+7. **Screen reader pass** and an automated audit (axe, Lighthouse).
+8. **Other browsers** — only one Chromium-based browser was used.
+9. **HTTP status for unknown case-study slugs.** They render the 404 page with `noindex` but
    answer 200, in the production build too. Decide whether a true 404 status is worth making
    the route block instead of stream.
 

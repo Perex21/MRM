@@ -67,6 +67,41 @@ Scale (fluid): `text-display` 40–144px · `text-title` 36–68px · `text-head
 - 1px hairlines in `border-line` separate rows. No shadows, no rounded cards.
 - Corners are square, except the seal (2px) and the disc.
 
+## The journey (home page)
+
+The home page is one journey through a single landscape. The `World` layer is fixed to the
+viewport and shows through every ink scene; paper scenes cover it like a scroll painting
+unrolled in front of the view, so when ink returns the landscape has moved on.
+
+| Scene | Section | Surface | World |
+| --- | --- | --- | --- |
+| The Arrival | Hero | Ink | Dense mist, ranges low, the path barely begun. The gust passes once |
+| The Path | Engineering approach | Ink | Mist parts, ranges sink as the land opens, path winds further |
+| The Archive | Selected work | Paper | Covered |
+| The Disciplines | Technical capabilities | Ink | Mist gathers among the ranges; a first trace of the sun |
+| The Record | Professional profile | Paper | Covered; the quietest scene |
+| The Destination | Contact | Ink | Mist settles, ranges rise, the path reaches the sun on the horizon |
+
+Hand-offs between surfaces: paper ripple rising out of the Path; the Archive's paper bowing
+into the Disciplines; a paper ridge rising into the Record; the Record's paper bowing away
+into the Destination. Every hand-off into a world scene is paper bending away, never an ink
+fill, so no hard edge forms against the lit sky.
+
+Travel: the three ranges slide sideways across the whole page at different rates (far 14%,
+middle 30%, near 48% of their width) and rise or sink per scene. Scene values are keyed to the
+live scroll position of each section and interpolated, so they reverse exactly.
+
+### The Arrival
+
+| Time from load | Event |
+| --- | --- |
+| 150ms | The gust begins at the left edge: ribbons of wind (one fine cinnabar), broad faint mist bands, motes |
+| ~300ms | The brand line is wiped in |
+| ~600–800ms | The gust front crosses the name; each letter is blown in from upwind (skewed, blurred) and settles as it passes; a band of mist crosses with it |
+| ~1s | The seal lands where the gust has passed |
+| ~1.15–1.3s | Role, statement and actions settle |
+| ~1.85s | The gust has dissipated; motes it carried drift to rest |
+
 ## The motif — the Divergence
 
 A straight path and a single stroke that leaves it. It changes form as the visitor moves on:
@@ -75,11 +110,12 @@ A straight path and a single stroke that leaves it. It changes form as the visit
 | --- | --- | --- |
 | Header, footer, favicon, section labels | Cinnabar stamp; bare glyph | `DivergenceMark` |
 | Hero | The disc as a seal carved with the motif; pressing it breaks the shard away | `Seal` |
-| Hero | A dashed road; the path walks it, a cinnabar node marks where it diverges, then it leaves for the seal | `HeroLandscape` |
-| Archive → approach | The paper bows down into the ink; a dashed road follows the curve | `BowDivider` |
+| Whole home page | A dashed road; the path walks it, a cinnabar node marks where it diverges, and it winds further into the ranges with every scene until it reaches the sun | `World` |
+| Archive → disciplines, record → destination | The paper bows away into the landscape; a dashed road follows the curve | `BowDivider` |
 | Approach | A rail fills as the reader advances; the current step branches off it | `StickySteps` |
-| Approach → capabilities, case studies | The next surface rising as a ridgeline | `RidgeDivider` |
-| Capabilities → profile | Three ink ridges close ranks into one | `RippleDivider` |
+| Disciplines → record, case studies | The next surface rising as a ridgeline | `RidgeDivider` |
+| Path → archive | Three paper ridges close ranks into one | `RippleDivider` |
+| Disciplines | Each discipline a hanging scroll that unrolls from its rod | `Capabilities` |
 | Archive and case-study headers | One composition per project, each with its own hover story | `ProjectArt` |
 | Case studies | Stages on one straight path, parallel parts branching off | `Pipeline` |
 
@@ -155,7 +191,14 @@ Rules are in `CLAUDE.md` → Motion. Constants: `src/lib/motion.ts` and the `--d
 ### Per-project hover stories (`ProjectArt`)
 
 - **Phishing:** the three input strands brighten, the ring around the caught stroke widens, the catch grows.
+  With a mouse, the scope (ring and catch) follows the pointer.
 - **GST:** the two ledgers close ranks toward the centre rule while the divergent row moves further away.
+  With a mouse, a cinnabar audit line runs down the ledgers with the pointer.
 - **ECHOSS:** the globe's meridians narrow as if it turns; the echo rings spread; the breakaway stroke thickens.
+  With a mouse, the echo drifts against the globe.
+
+Under each row, "How it works" (a real button) unrolls an ink plate with the project's actual
+processing stages. Following a project morphs its artwork into the case-study header (React
+`ViewTransition`, class `morph`).
 
 One primary motion per element. Scroll is never taken over.

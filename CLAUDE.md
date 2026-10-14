@@ -1,7 +1,8 @@
 # THE UNORTHODOX PATH — project rules
 
-Personal portfolio for an AI/ML engineer and software developer: a home page and one case
-study per project at `/work/[slug]`. Audience: recruiters, hiring managers, engineering
+Personal portfolio for an AI/ML engineer and software developer: a home page told as a
+journey (Arrival → Path → Archive → Disciplines → Record → Destination) and one case study
+per project at `/work/[slug]`. Audience: recruiters, hiring managers, engineering
 teams, freelance clients. Details live in `docs/`.
 
 @AGENTS.md
@@ -21,8 +22,11 @@ teams, freelance clients. Details live in `docs/`.
 - Tone: quiet confidence, discipline, craft. A recruiter must understand the page in seconds
   without decoding the theme.
 - The recurring motif is **the Divergence**: a straight line and one stroke that leaves it.
-  Reuse it (`DivergenceMark`, `Seal`, `HeroLandscape`, `RidgeDivider`, `BowDivider`,
-  `RippleDivider`, `ProjectArt`, `Pipeline`, `StickySteps`) rather than adding new symbols.
+  Reuse it (`DivergenceMark`, `Seal`, `World`, `RidgeDivider`, `BowDivider`, `RippleDivider`,
+  `ProjectArt`, `Pipeline`, `StickySteps`) rather than adding new symbols.
+- The home page's landscape is one fixed `World` layer, visible through ink scenes and covered
+  by paper scenes. Change the journey by editing its scene frames, not by adding per-section
+  backgrounds.
 - Do not turn every section into a card. Prefer hairlines, whitespace, and grid alignment.
 
 ## Truthful content (hard rule)
@@ -41,9 +45,10 @@ teams, freelance clients. Details live in `docs/`.
 
 - Next.js App Router, React 19, TypeScript strict, Tailwind CSS v4, npm. Alias `@/*` → `src/*`.
 - Server components by default. `"use client"` only for real interactivity (currently
-  `MobileNav`, `NavLinks`, `Reveal`, `MaskedWords`, `Tilt`, `Magnetic`, `Seal`,
-  `HeroLandscape`, `BowDivider`, `RippleDivider`, `StickySteps`). `RollText` is CSS-only.
-- Layout: `src/app` (routes), `src/components/{layout,sections,projects,ui,graphics,motion}`,
+  `MobileNav`, `NavLinks`, `Reveal`, `MaskedWords`, `Magnetic`, `Seal`, `World`, `Drift`,
+  `WindGust`, `BowDivider`, `RippleDivider`, `StickySteps`, `ArtField`, `ProjectDetails`).
+  `RollText` is CSS-only.
+- Layout: `src/app` (routes), `src/components/{layout,sections,projects,ui,graphics,motion,world}`,
   `src/content` (typed data), `src/lib` (helpers), `src/styles/tokens.css` (design tokens).
 - Style with tokens only. No raw hex values in components; add a token if one is missing.
 - Colours inside a section come from semantic tokens (`text-fg`, `text-fg-muted`,
@@ -68,13 +73,19 @@ teams, freelance clients. Details live in `docs/`.
 
 ## Motion
 
-- Vocabulary: fade + upward settle, clip reveals for artwork, masked headline lines and words,
-  drawn strokes, character-roll labels, precise hover/press, small pointer-driven depth and
-  magnetism. One primary motion per element. No bounce, idle loops, scroll-jacking or custom
-  cursor. CSS `position: sticky` is used for the approach index only; nothing pins scrolling.
-- Scroll-linked movement is limited to: the hero layers, the bow and ripple section
-  hand-offs, and the approach rail. Each is small, scrubbed to native scroll, and inert when
-  reduced motion is on or JavaScript is off.
+- Vocabulary: the opening gust (once), letters carried in on it, fade + upward settle, clip
+  reveals for artwork, masked headline lines and words, drawn strokes, character-roll labels,
+  precise hover/press, small pointer-driven depth and magnetism. One primary motion per
+  element. No bounce, idle loops, scroll-jacking or custom cursor. CSS `position: sticky` is
+  used for the approach index only; nothing pins scrolling.
+- The gust is one designed event: canvas wind (`WindGust`) and the CSS name reveal share one
+  clock (`GUST` in `lib/motion.ts`, `--gust-start` in tokens). It never blocks input and skips
+  itself if hydration is too late to be in step.
+- Scroll-linked movement: the world layer (ranges, mist, path, sun), the seal's drift, the bow
+  and ripple hand-offs and the approach rail. All are pure functions of scroll position, so
+  they reverse exactly when scrolling back, and all are inert under reduced motion.
+- Canvases (`WindGust`, `Drift`) run animation frames only while something moves them, cap
+  device pixel ratio at 1.5, and clean up their frames and listeners.
 - Hover is never the only way to see something. Hover and keyboard focus (`focus-within`)
   trigger the same choreography; touch gets the resting state, which shows every fact.
 - Durations and easings come from `src/styles/tokens.css` (CSS) and `src/lib/motion.ts`

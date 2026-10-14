@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { ReactNode } from "react";
+import { ViewTransition, type ReactNode } from "react";
 import { RidgeDivider } from "@/components/graphics/RidgeDivider";
 import { Container } from "@/components/layout/Container";
 import { Reveal } from "@/components/motion/Reveal";
@@ -57,7 +57,10 @@ export function CaseStudy({ project }: { project: Project }) {
           </div>
 
           <figure className="anim-settle lg:col-span-5 lg:pt-22" style={delay(250)}>
-            <ProjectArt slug={project.slug} alt={project.artAlt} className="block aspect-4/3 w-full border border-line" />
+            {/* Same name as the archive row's artwork: following a project morphs one into the other. */}
+            <ViewTransition name={`art-${project.slug}`} share="morph" default="none">
+              <ProjectArt slug={project.slug} alt={project.artAlt} className="block aspect-4/3 w-full border border-line" />
+            </ViewTransition>
             <figcaption className="label mt-3 text-fg-faint">Illustration, not a screenshot</figcaption>
           </figure>
         </Container>

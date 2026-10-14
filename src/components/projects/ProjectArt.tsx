@@ -9,7 +9,8 @@ import { cn } from "@/lib/cn";
  *
  * `art-*` classes are hooks for the archive's hover choreography (see
  * globals.css): each composition tells its own short story when its row is
- * hovered or focused, and rests in its drawn state otherwise.
+ * hovered or focused, and rests in its drawn state otherwise. `art-follow`
+ * parts also answer the pointer through --px/--py (ArtField).
  */
 
 const road = { stroke: "var(--color-silver-dim)", strokeDasharray: "2 8" } as const;
@@ -24,9 +25,12 @@ function SignalsArt() {
         <path className="art-part art-strand" {...line} d="M0 70H86c44 0 40 50 84 50M0 120h170M0 170H86c44 0 40-50 84-50" />
         <path {...road} d="M170 120h150" />
         <path className="art-part art-branch" {...path} d="M170 120c44 0 62-30 92-58" />
-        <circle className="art-part art-ring" cx="262" cy="62" r="24" stroke="var(--color-cinnabar)" strokeWidth="1.5" />
       </g>
-      <circle className="art-part art-catch" cx="262" cy="62" r="6" fill="var(--color-cinnabar)" />
+      {/* The scope: follows the pointer over the row, as the scanner follows a suspect link. */}
+      <g className="art-follow art-scope">
+        <circle className="art-part art-ring" cx="262" cy="62" r="24" fill="none" stroke="var(--color-cinnabar)" strokeWidth="1.5" />
+        <circle className="art-part art-catch" cx="262" cy="62" r="6" fill="var(--color-cinnabar)" />
+      </g>
       <g fill="var(--color-parchment)">
         <circle cx="170" cy="120" r="3.5" />
         <circle cx="14" cy="70" r="2" />
@@ -62,6 +66,8 @@ function LedgerArt() {
         ))}
       </g>
       <path className="art-part art-diverge art-branch" {...path} fill="none" d="M178 132c40 0 58-18 98-34" />
+      {/* The audit line: runs down the ledgers with the pointer. */}
+      <path className="art-follow art-scan" d="M30 120H290" stroke="var(--color-cinnabar-bright)" strokeWidth="1" />
       <rect className="art-part art-catch" x="153" y="125" width="14" height="14" fill="var(--color-cinnabar)" />
     </>
   );
@@ -79,8 +85,11 @@ function EchoArt() {
         </g>
         <ellipse cx="128" cy="124" rx="50" ry="17" />
         <path d="M82 104c30 12 62 12 92 0M82 144c30-12 62-12 92 0" />
-        <circle className="art-part art-echo-1" cx="128" cy="124" r="72" strokeOpacity="0.55" />
-        <circle className="art-part art-echo-2" cx="128" cy="124" r="94" {...road} strokeOpacity="0.6" />
+        {/* The echo drifts against the globe as the pointer moves. */}
+        <g className="art-follow art-drift">
+          <circle className="art-part art-echo-1" cx="128" cy="124" r="72" strokeOpacity="0.55" />
+          <circle className="art-part art-echo-2" cx="128" cy="124" r="94" {...road} strokeOpacity="0.6" />
+        </g>
       </g>
       <path
         className="art-part art-branch"

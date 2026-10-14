@@ -5,17 +5,19 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { projects } from "@/content/projects";
 import { section } from "@/content/sections";
 
-const { chapter, title } = section("work");
+const { chapter, title, scene } = section("work");
 
 /**
- * The Archive, on paper — the surface that rises out of the hero. Its foot
- * bows down into the ink of the next section (see BowDivider in Approach).
+ * The Archive — selected work, on paper, which rises out of the Path. Each
+ * project is a discovery: its own illustration and pointer response, and a
+ * flow plate that unrolls on request. Its foot bows down into the ink of the
+ * Disciplines (see BowDivider in Capabilities).
  */
 export function SelectedWork() {
   return (
     <section id="work" aria-labelledby="work-title" className="surface-paper relative -mt-px pt-12 md:pt-16">
       <Container className="pb-section">
-        <SectionHeading id="work-title" chapter={chapter} eyebrow="Archive" title={title}>
+        <SectionHeading id="work-title" chapter={chapter} eyebrow={scene} title={title}>
           <p>
             Three projects, each with a full case study: what the problem was, how the system works, the
             decisions behind it, and where it falls short.

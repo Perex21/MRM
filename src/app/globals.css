@@ -120,6 +120,87 @@
   animation: draw var(--duration-draw) var(--ease-ink) var(--delay, 0ms) both;
 }
 
+/* Stroke draw-on that stops part-way: set --draw-to (0–1). Requires pathLength="1". */
+@keyframes draw-to {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: calc(1 - var(--draw-to, 1));
+  }
+}
+
+@utility anim-draw-to {
+  animation: draw-to var(--duration-draw) var(--ease-ink) var(--delay, 0ms) both;
+}
+
+/*
+ * The Arrival. The name is carried in on the opening gust: each letter is
+ * blown in from upwind — skewed, blurred, faint — and settles as the gust's
+ * front passes it, left to right. A band of mist crosses the name with the
+ * front. Times are offsets from --gust-start, the same clock as the canvas wind.
+ */
+@keyframes gust-letter {
+  0% {
+    opacity: 0;
+    transform: translate3d(-0.75em, 0.06em, 0) skewX(-16deg);
+    filter: blur(10px);
+  }
+  55% {
+    opacity: 1;
+    filter: blur(1px);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+@keyframes gust-mist {
+  from {
+    opacity: 0;
+    transform: translateX(-60%);
+  }
+  35% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    transform: translateX(260%);
+  }
+}
+
+@keyframes wipe-in {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+}
+
+@utility gust-letter {
+  display: inline-block;
+  animation: gust-letter 1000ms var(--ease-settle) calc(var(--gust-start) + 260ms + var(--i, 0) * 60ms) both;
+}
+
+@utility gust-mist {
+  position: absolute;
+  inset-block: -20%;
+  left: 0;
+  width: 45%;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 50% 50% at 50% 50%,
+    color-mix(in srgb, var(--color-parchment) 18%, transparent),
+    transparent 70%
+  );
+  opacity: 0;
+  animation: gust-mist 1500ms var(--ease-entrance) calc(var(--gust-start) + 320ms) 1;
+}
+
+@utility anim-wipe {
+  animation: wipe-in 900ms var(--ease-settle) var(--delay, 0ms) both;
+}
+
 @utility anim-pop {
   transform-box: fill-box;
   transform-origin: center;
@@ -168,6 +249,28 @@
   .art-part {
     transform-box: fill-box;
     transform-origin: center;
+  }
+
+  /* Pointer-following parts (ArtField sets --px/--py, -1…1). */
+  .art-follow {
+    transition:
+      transform 500ms var(--ease-entrance),
+      opacity 400ms var(--ease-entrance);
+  }
+
+  .art-scope {
+    transform: translate(calc(var(--px, 0) * 16px), calc(var(--py, 0) * 12px));
+  }
+
+  .art-scan {
+    opacity: 0;
+    transform: translateY(calc(var(--py, 0) * 84px));
+  }
+
+  .art-drift {
+    transform-box: fill-box;
+    transform-origin: center;
+    transform: translate(calc(var(--px, 0) * -12px), calc(var(--py, 0) * -9px));
   }
 
   @media (hover: hover) and (min-width: 64rem) {
@@ -230,6 +333,10 @@
     .art-meridians {
       transform: scaleX(0.55);
     }
+
+    .art-scan {
+      opacity: 0.85;
+    }
   }
 }
 
@@ -239,5 +346,23 @@
   *::after {
     animation: none !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+/*
+ * Archive → case study: the project's artwork morphs from its row into the
+ * case-study header (React ViewTransition, name "art-<slug>", class "morph").
+ * Browsers without the View Transitions API simply navigate.
+ */
+::view-transition-group(.morph) {
+  animation-duration: 650ms;
+  animation-timing-function: var(--ease-settle);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
   }
 }
