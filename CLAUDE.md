@@ -21,8 +21,8 @@ teams, freelance clients. Details live in `docs/`.
 - Tone: quiet confidence, discipline, craft. A recruiter must understand the page in seconds
   without decoding the theme.
 - The recurring motif is **the Divergence**: a straight line and one stroke that leaves it.
-  Reuse it (`DivergenceMark`, `Seal`, `HeroLandscape`, `RidgeDivider`, `ProjectArt`, `Pipeline`)
-  rather than adding new symbols.
+  Reuse it (`DivergenceMark`, `Seal`, `HeroLandscape`, `RidgeDivider`, `BowDivider`,
+  `RippleDivider`, `ProjectArt`, `Pipeline`, `StickySteps`) rather than adding new symbols.
 - Do not turn every section into a card. Prefer hairlines, whitespace, and grid alignment.
 
 ## Truthful content (hard rule)
@@ -41,7 +41,8 @@ teams, freelance clients. Details live in `docs/`.
 
 - Next.js App Router, React 19, TypeScript strict, Tailwind CSS v4, npm. Alias `@/*` → `src/*`.
 - Server components by default. `"use client"` only for real interactivity (currently
-  `MobileNav`, `NavLinks`, `Reveal`, `Tilt`, `Seal`, `HeroLandscape`).
+  `MobileNav`, `NavLinks`, `Reveal`, `MaskedWords`, `Tilt`, `Magnetic`, `Seal`,
+  `HeroLandscape`, `BowDivider`, `RippleDivider`, `StickySteps`). `RollText` is CSS-only.
 - Layout: `src/app` (routes), `src/components/{layout,sections,projects,ui,graphics,motion}`,
   `src/content` (typed data), `src/lib` (helpers), `src/styles/tokens.css` (design tokens).
 - Style with tokens only. No raw hex values in components; add a token if one is missing.
@@ -67,10 +68,15 @@ teams, freelance clients. Details live in `docs/`.
 
 ## Motion
 
-- Vocabulary: fade + upward settle, clip reveals for artwork, masked headline lines, drawn
-  strokes, precise hover/press, small pointer-driven depth. One primary motion per element.
-  No bounce, idle loops, pinning, scroll-jacking or custom cursor. Scroll-linked movement is
-  limited to the hero hand-off.
+- Vocabulary: fade + upward settle, clip reveals for artwork, masked headline lines and words,
+  drawn strokes, character-roll labels, precise hover/press, small pointer-driven depth and
+  magnetism. One primary motion per element. No bounce, idle loops, scroll-jacking or custom
+  cursor. CSS `position: sticky` is used for the approach index only; nothing pins scrolling.
+- Scroll-linked movement is limited to: the hero layers, the bow and ripple section
+  hand-offs, and the approach rail. Each is small, scrubbed to native scroll, and inert when
+  reduced motion is on or JavaScript is off.
+- Hover is never the only way to see something. Hover and keyboard focus (`focus-within`)
+  trigger the same choreography; touch gets the resting state, which shows every fact.
 - Durations and easings come from `src/styles/tokens.css` (CSS) and `src/lib/motion.ts`
   (Motion). They mirror each other — change both.
 - Content must be visible without JavaScript. First-screen entrances are CSS; scroll

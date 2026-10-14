@@ -49,9 +49,28 @@
   }
 }
 
+/* Lines rise out of their mask with a slight lean that settles flat. */
 @keyframes unmask {
   from {
-    transform: translateY(105%);
+    transform: translateY(105%) rotate(2.5deg);
+  }
+}
+
+/* The point of divergence: a dot that lands, and one ring that spreads once. */
+@keyframes pop-in {
+  from {
+    transform: scale(0);
+  }
+}
+
+@keyframes ripple-once {
+  from {
+    opacity: 0.9;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(4.5);
   }
 }
 
@@ -73,6 +92,7 @@
 
   & > span {
     display: block;
+    transform-origin: 0 100%;
     animation: unmask var(--duration-headline) var(--ease-settle) var(--delay, 0ms) both;
   }
 }
@@ -98,6 +118,119 @@
 @utility anim-draw {
   stroke-dasharray: 1;
   animation: draw var(--duration-draw) var(--ease-ink) var(--delay, 0ms) both;
+}
+
+@utility anim-pop {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pop-in 520ms var(--ease-settle) var(--delay, 0ms) both;
+}
+
+/* Base state is invisible, so the ring exists only while it plays. */
+@utility anim-ripple {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ripple-once 1600ms var(--ease-entrance) var(--delay, 0ms) 1;
+}
+
+/*
+ * Hover choreography. Everything below runs only when motion is allowed;
+ * under reduced motion hover changes colour, nothing moves.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  /* Character roll (RollText): each glyph lifts one line, staggered by --i. */
+  .roll-char {
+    transition: transform 420ms var(--ease-entrance) calc(var(--i) * 16ms);
+  }
+
+  .group:hover .roll-char,
+  .group:focus-visible .roll-char {
+    transform: translateY(-100%);
+  }
+
+  /*
+   * Archive artwork (ProjectEntry + ProjectArt). The frame opens to full
+   * bleed while the drawing settles from a slight zoom; each composition then
+   * plays its own small story. Desktop hover devices only — on touch the
+   * artwork simply rests in its open state.
+   */
+  .art-frame,
+  .art-zoom,
+  .art-part {
+    transition:
+      clip-path 700ms var(--ease-settle),
+      transform 700ms var(--ease-settle),
+      stroke 400ms var(--ease-entrance),
+      stroke-width 400ms var(--ease-entrance);
+  }
+
+  .art-part {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  @media (hover: hover) and (min-width: 64rem) {
+    .art-frame {
+      clip-path: inset(5% 6%);
+    }
+
+    .art-zoom {
+      transform: scale(1.08);
+    }
+
+    :is(.group:hover, .group:focus-within) {
+      .art-frame {
+        clip-path: inset(0);
+      }
+
+      .art-zoom {
+        transform: none;
+      }
+    }
+  }
+
+  :is(.group:hover, .group:focus-within) {
+    .art-branch {
+      stroke-width: 2.5;
+    }
+
+    .art-catch {
+      transform: scale(1.5);
+    }
+
+    .art-strand {
+      stroke: var(--color-parchment);
+    }
+
+    .art-ring {
+      transform: scale(1.3);
+    }
+
+    .art-ledger-left {
+      transform: translateX(6px);
+    }
+
+    .art-ledger-right {
+      transform: translateX(-6px);
+    }
+
+    .art-diverge {
+      transform: translate(10px, -8px);
+    }
+
+    .art-echo-1 {
+      transform: scale(1.1);
+    }
+
+    .art-echo-2 {
+      transform: scale(1.18);
+    }
+
+    .art-meridians {
+      transform: scaleX(0.55);
+    }
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -1,4 +1,3 @@
-import { RidgeDivider } from "@/components/graphics/RidgeDivider";
 import { Container } from "@/components/layout/Container";
 import { Reveal } from "@/components/motion/Reveal";
 import { ProjectEntry } from "@/components/projects/ProjectEntry";
@@ -8,7 +7,10 @@ import { section } from "@/content/sections";
 
 const { chapter, title } = section("work");
 
-/** The Archive, on paper — the inverted surface that rises out of the hero. */
+/**
+ * The Archive, on paper — the surface that rises out of the hero. Its foot
+ * bows down into the ink of the next section (see BowDivider in Approach).
+ */
 export function SelectedWork() {
   return (
     <section id="work" aria-labelledby="work-title" className="surface-paper relative -mt-px pt-12 md:pt-16">
@@ -30,7 +32,6 @@ export function SelectedWork() {
           ))}
         </ol>
       </Container>
-      <RidgeDivider to="ink" />
     </section>
   );
 }

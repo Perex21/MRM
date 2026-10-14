@@ -30,11 +30,11 @@ src/
   app/            layout, page, not-found, robots, sitemap, opengraph-image, work/[slug]
   components/
     layout/       Container, SiteHeader, NavLinks (client), MobileNav (client), SiteFooter
-    sections/     Hero, SelectedWork, Approach, Capabilities, ProfileContact
+    sections/     Hero, SelectedWork, Approach, StickySteps (client), Capabilities, ProfileContact
     projects/     ProjectEntry, ProjectArt, CaseStudy, Pipeline
     ui/           ActionLink, SectionHeading
-    graphics/     DivergenceMark, Seal (client), HeroLandscape (client), RidgeDivider
-    motion/       Reveal (client), Tilt (client)
+    graphics/     DivergenceMark, Seal, HeroLandscape, BowDivider, RippleDivider (client); RidgeDivider
+    motion/       Reveal, MaskedWords, Tilt, Magnetic (client); RollText (CSS only)
   content/        site.ts, sections.ts, projects.ts, profile.ts   ← all public copy and facts
   lib/            cn.ts, motion.ts
   styles/         tokens.css                                      ← design tokens
@@ -61,8 +61,12 @@ docs/
 | `NavLinks` | Scroll-spy (`IntersectionObserver`) for `aria-current` |
 | `Reveal` | Scroll-triggered reveal |
 | `Tilt` | Pointer-driven depth on project artwork |
-| `Seal` | The signature interaction |
-| `HeroLandscape` | Scroll-linked ridge offsets |
+| `Seal` | The signature interaction; pointer lean and scroll depth |
+| `HeroLandscape` | Scroll and pointer depth on the ridges and path layer |
+| `MaskedWords` | Once-only word reveal (shares `useRevealPhase` with `Reveal`) |
+| `Magnetic` | Pointer pull on primary actions |
+| `StickySteps` | Active-step tracking (`IntersectionObserver`) and the scroll-filled rail |
+| `BowDivider`, `RippleDivider` | Scroll-scrubbed section hand-offs |
 
 ## Decisions
 
@@ -92,6 +96,37 @@ docs/
   `cacheComponents` prerendering.
 - **Hero disc is positioned in CSS**, not inside the landscape SVG, so cropping can never put
   cinnabar behind body text. The landscape's road and path lines render from `md` up.
+
+## Motion upgrade (2026-10-14)
+
+Interaction patterns were taken from public component libraries as **references only**; every
+implementation here is original code on the existing Motion + CSS stack. No third-party
+component code was copied, so no third-party licence terms apply to the source. Patterns used:
+
+| Reference | Adapted as |
+| --- | --- |
+| Tween UI — Card Hover Expand; Toggle Supply — Expand Image on Hover | Archive row choreography: art frame opens from an inset while the drawing settles from a slight zoom |
+| Tween UI — Process Sticky Steps | `StickySteps` for the approach |
+| Tween UI — Text Roll Button | `RollText` |
+| DesignPass — Bow | `BowDivider` |
+| DesignPass — AntLine | The dashed road on the bow and the approach rail, moved by scroll rather than looping |
+| DesignPass — Ripple | `RippleDivider`, as ink ridges |
+| DesignPass — Magnet | `Magnetic`, translation only (no tilt or glare) |
+
+Considered and not used: WarpText (WebGL headline distortion competes with legibility), FanDeck
+and ScrollCurl (3D card stacks read as a product showcase, not an editorial archive), Fluid Orb
+(glowing gradient blob is off-brand), Cursor ImageTrail and custom cursors (no real images to
+trail; rule against custom cursors), Tab Wipe and Shutter Slider (no image sets to switch
+between), horizontal scroll and page transitions (fight native scrolling). GSAP and three.js
+remain unnecessary: everything above runs on Motion and CSS.
+
+Implementation notes:
+- The hero road and path sit in their own layer to the right of the text column, sized near
+  1:1 with its box. Chrome applies `pathLength`-normalised dashes in screen space for
+  `vector-effect: non-scaling-stroke`, which broke the draw-on at other scales, so the drawn
+  path uses a normal stroke.
+- Every scroll or pointer effect reads `useReducedMotion` and collapses to its resting value;
+  listeners are added in effects and removed on cleanup.
 
 ## Tests
 

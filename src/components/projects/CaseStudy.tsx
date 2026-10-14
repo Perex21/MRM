@@ -137,7 +137,7 @@ export function CaseStudy({ project }: { project: Project }) {
               All work
             </ActionLink>
             <ActionLink href={site.contact.primary.href} variant="line">
-              Discuss on {site.contact.primary.label}
+              {`Discuss on ${site.contact.primary.label}`}
             </ActionLink>
           </div>
         </Container>

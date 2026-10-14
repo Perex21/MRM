@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { RidgeDivider } from "@/components/graphics/RidgeDivider";
+import { RippleDivider } from "@/components/graphics/RippleDivider";
 import { Container } from "@/components/layout/Container";
 import { Reveal } from "@/components/motion/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -78,7 +78,7 @@ export function Capabilities() {
           </Reveal>
         </div>
       </Container>
-      <RidgeDivider to="ink" />
+      <RippleDivider />
     </section>
   );
 }

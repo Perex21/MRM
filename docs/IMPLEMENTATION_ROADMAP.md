@@ -26,6 +26,15 @@ Verification in that session:
 - Exercised: seal press, mobile menu (open, Tab in, Escape with focus return, link click),
   scroll-spy, anchor navigation.
 
+### Mission 003 — motion and interaction upgrade
+- Hero opening sequence: staggered masked lines with a settling lean, the path walking the road
+  and marking the point of divergence, pointer and scroll depth on ridges and seal, magnetic CTA.
+- Archive rows: coordinated hover/focus choreography and a distinct story per illustration.
+- Approach as sticky steps with a synchronised index and a scroll-filled rail.
+- Bow and ripple section hand-offs; masked-word section titles; character-roll labels.
+- Verified in the browser at 360, 390, 1024 and 1440 (seen) and 768 (measured); reduced motion
+  checked by simulating the preference for scripts — the CSS media query was not toggled.
+
 ## Not yet verified — do these first
 
 1. **Reduced motion in a real browser.** The test browser cannot emulate the preference.

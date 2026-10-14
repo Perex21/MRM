@@ -45,3 +45,12 @@ export const menuPanel = {
 
 /** Spring for pointer-driven depth: quick to follow, no overshoot. */
 export const depthSpring = { stiffness: 180, damping: 22, mass: 0.6 } as const;
+
+/** Spring for magnetic controls: a firm pull that settles without wobble. */
+export const magnetSpring = { stiffness: 220, damping: 18, mass: 0.5 } as const;
+
+/** Seconds between siblings in staggered reveals. */
+export const stagger = {
+  /** Words in a masked headline. */
+  words: 0.07,
+} as const;

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { RollText } from "@/components/motion/RollText";
 
 export type NavLink = { id: string; href: string; label: string; chapter: string };
 
@@ -44,9 +45,9 @@ export function NavLinks({ links }: { links: NavLink[] }) {
           <Link
             href={link.href}
             aria-current={active === link.id ? "location" : undefined}
-            className="label link-draw inline-flex min-h-12 items-center px-3 text-fg-muted hover:text-fg aria-[current]:text-fg"
+            className="group label inline-flex min-h-12 items-center px-3 text-fg-muted decoration-accent underline-offset-8 transition-colors duration-(--duration-hover) hover:text-fg aria-[current]:text-fg aria-[current]:underline"
           >
-            {link.label}
+            <RollText>{link.label}</RollText>
           </Link>
         </li>
       ))}

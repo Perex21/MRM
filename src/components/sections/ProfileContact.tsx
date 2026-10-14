@@ -1,5 +1,7 @@
 import { DivergenceMark } from "@/components/graphics/DivergenceMark";
 import { Container } from "@/components/layout/Container";
+import { Magnetic } from "@/components/motion/Magnetic";
+import { MaskedWords } from "@/components/motion/MaskedWords";
 import { Reveal } from "@/components/motion/Reveal";
 import { ActionLink, ExternalMark } from "@/components/ui/ActionLink";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -14,7 +16,7 @@ export function Profile() {
   const { person, links, resume } = site;
 
   return (
-    <section id="profile" aria-labelledby="profile-title" className="pt-section">
+    <section id="profile" aria-labelledby="profile-title" className="relative -mt-px bg-ink pt-section">
       <Container>
         <SectionHeading id="profile-title" chapter={profile.chapter} eyebrow="Record" title={profile.title}>
           <p>
@@ -65,7 +67,7 @@ export function Contact() {
   return (
     <section id="contact" aria-labelledby="contact-title" className="py-section">
       <Container>
-        <Reveal className="grid gap-x-12 gap-y-10 lg:grid-cols-12">
+        <div className="grid gap-x-12 gap-y-10 lg:grid-cols-12">
           <p className="label flex items-start gap-3 text-fg-faint lg:col-span-3 lg:pt-4">
             <DivergenceMark variant="glyph" className="size-5 text-accent" />
             <span>
@@ -75,28 +77,32 @@ export function Contact() {
 
           <div className="lg:col-span-9">
             <h2 id="contact-title" className="font-display text-display font-medium text-balance normal-case">
-              Take the other path.
+              <MaskedWords text="Take the other path." />
             </h2>
-            <p className="mt-8 max-w-prose text-lead text-fg-muted">
-              If you are hiring, building something that needs an engineer who questions the obvious route,
-              or want to talk through one of these projects, send me a message on {primary.label}.
-            </p>
+            <Reveal delay={0.25}>
+              <p className="mt-8 max-w-prose text-lead text-fg-muted">
+                If you are hiring, building something that needs an engineer who questions the obvious route,
+                or want to talk through one of these projects, send me a message on {primary.label}.
+              </p>
 
-            <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
-              <ActionLink href={primary.href}>Message me on {primary.label}</ActionLink>
-              {email && (
-                <ActionLink href={`mailto:${email}`} variant="line">
-                  {email}
-                </ActionLink>
-              )}
-              {secondary.map((link) => (
-                <ActionLink key={link.href} href={link.href} variant="line">
-                  {link.label}
-                </ActionLink>
-              ))}
-            </div>
+              <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
+                <Magnetic>
+                  <ActionLink href={primary.href}>{`Message me on ${primary.label}`}</ActionLink>
+                </Magnetic>
+                {email && (
+                  <ActionLink href={`mailto:${email}`} variant="line">
+                    {email}
+                  </ActionLink>
+                )}
+                {secondary.map((link) => (
+                  <ActionLink key={link.href} href={link.href} variant="line">
+                    {link.label}
+                  </ActionLink>
+                ))}
+              </div>
+            </Reveal>
           </div>
-        </Reveal>
+        </div>
       </Container>
     </section>
   );

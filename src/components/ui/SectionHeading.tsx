@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { DivergenceMark } from "@/components/graphics/DivergenceMark";
+import { MaskedWords } from "@/components/motion/MaskedWords";
 
 type SectionHeadingProps = {
   /** Id for the heading, for aria-labelledby on the section. */
@@ -25,7 +26,7 @@ export function SectionHeading({ id, chapter, eyebrow, title, as: Heading = "h2"
       </p>
       <div className="lg:col-span-9">
         <Heading id={id} className="font-display text-title font-medium text-balance">
-          {title}
+          <MaskedWords text={title} />
         </Heading>
         {children && <div className="mt-6 max-w-prose text-lead text-fg-muted">{children}</div>}
       </div>

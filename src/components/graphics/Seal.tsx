@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useMotionValue, useReducedMotion, useSpring } from "motion/react";
+import { motion, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform } from "motion/react";
 import { useEffect, useId, useRef, useState } from "react";
 import { cn } from "@/lib/cn";
 import { depthSpring, duration, ease } from "@/lib/motion";
@@ -17,8 +17,10 @@ const CHORD = "M78 2.45V197.55";
  * path and the diverging stroke lifts away — and pressing again restores it.
  *
  * It server-renders as the intact disc, so the hero is complete before any
- * script runs. On mouse devices the disc leans slightly toward the pointer.
- * Under reduced motion the lean is off and the break is an instant change.
+ * script runs. On mouse devices the disc leans slightly toward the pointer,
+ * and on scroll it sinks more slowly than the page — the farthest layer of
+ * the hero. Under reduced motion the lean and the drift are off and the break
+ * is an instant change.
  */
 export function Seal({ className }: { className?: string }) {
   const [broken, setBroken] = useState(false);
@@ -27,6 +29,8 @@ export function Seal({ className }: { className?: string }) {
   const prefersReducedMotion = useReducedMotion();
   const rotateX = useSpring(useMotionValue(0), depthSpring);
   const rotateY = useSpring(useMotionValue(0), depthSpring);
+  const { scrollY } = useScroll();
+  const drift = useTransform(scrollY, [0, 900], [0, prefersReducedMotion ? 0 : 140]);
 
   useEffect(() => {
     const element = ref.current;
@@ -60,7 +64,8 @@ export function Seal({ className }: { className?: string }) {
       title={broken ? "Restore the seal" : "Break the seal"}
       onClick={() => setBroken((value) => !value)}
       className={cn("block cursor-pointer rounded-full", className)}
-      style={{ rotateX, rotateY, transformPerspective: 700 }}
+      style={{ rotateX, rotateY, y: drift, transformPerspective: 700 }}
+      whileTap={prefersReducedMotion ? undefined : { scale: 0.96 }}
     >
       <svg viewBox="0 0 200 200" aria-hidden="true" focusable="false" className="block size-full overflow-visible">
         <defs>
