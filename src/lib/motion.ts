@@ -35,14 +35,6 @@ export const reveal = {
 
 export type RevealVariant = keyof typeof reveal;
 
-/** Mobile menu panel: short fade and settle from just above. */
-export const menuPanel = {
-  initial: { opacity: 0, y: -8 },
-  animate: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: -8 },
-  transition: { duration: duration.hover, ease: ease.entrance },
-} as const;
-
 /** Spring for pointer-driven depth: quick to follow, no overshoot. */
 export const depthSpring = { stiffness: 180, damping: 22, mass: 0.6 } as const;
 
@@ -55,9 +47,3 @@ export const stagger = {
   words: 0.07,
 } as const;
 
-/**
- * The opening gust, in milliseconds after navigation start (performance.now()
- * shares that origin with CSS animations). The landing shader draws it; the
- * world's mist banks and the drifting motes are shoved by it in step.
- */
-export const GUST = { start: 2400, duration: 1800 } as const;

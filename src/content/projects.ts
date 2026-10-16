@@ -30,6 +30,8 @@ export type Project = {
   title: string;
   /** Short name for compact links. */
   short: string;
+  /** The name as the brush writes it in the passage into the Archive (owner's wording). */
+  brushName: string;
   /** One sentence for the archive and metadata. */
   summary: string;
   category: string;
@@ -61,6 +63,7 @@ export const projects: Project[] = [
     slug: "hybrid-phishing-detection",
     title: "Hybrid Phishing Detection Platform",
     short: "Phishing detection",
+    brushName: "Hybrid Phishing Detection Platform",
     summary:
       "A FastAPI service and React dashboard that score URLs, messages and screenshots for phishing by combining rule-based heuristics with machine-learning classifiers.",
     category: "Security · Machine learning",
@@ -183,6 +186,7 @@ export const projects: Project[] = [
     slug: "gst-audit-compliance",
     title: "AI-powered GST Audit & Compliance Platform",
     short: "GST audit",
+    brushName: "AI-powered GST Audit & Compliance Platform",
     summary:
       "A reconciliation tool that compares a purchase register against GSTR-2B, applies rule-based GST checks, and uses a language model to explain the mismatches it finds.",
     category: "Compliance · Data and AI",
@@ -305,6 +309,7 @@ export const projects: Project[] = [
     slug: "echoss-studio",
     title: "ECHOSS STUDIO website",
     short: "ECHOSS Studio",
+    brushName: "ECHOSS STUDIO",
     summary:
       "A marketing site for an animation studio, built around an interactive WebGL globe, scroll-driven sequences and an enquiry form that never fakes a success.",
     category: "Web engineering · Motion",

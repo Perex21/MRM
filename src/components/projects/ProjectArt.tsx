@@ -7,10 +7,9 @@ import { cn } from "@/lib/cn";
  * Divergence motif that hint at how each system works — they are artwork, not
  * screenshots, and are captioned as illustrations wherever they appear.
  *
- * `art-*` classes are hooks for the archive's hover choreography (see
- * globals.css): each composition tells its own short story when its row is
- * hovered or focused, and rests in its drawn state otherwise. `art-follow`
- * parts also answer the pointer through --px/--py (ArtField).
+ * `art-*` classes are hooks for hover choreography (see globals.css): each
+ * composition tells its own short story when its container is hovered or
+ * focused, and rests in its drawn state otherwise.
  */
 
 const road = { stroke: "var(--color-silver-dim)", strokeDasharray: "2 8" } as const;

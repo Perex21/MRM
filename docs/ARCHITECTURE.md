@@ -10,8 +10,9 @@
 | Tailwind CSS | 4.3.3 | Loaded through `@tailwindcss/turbopack`; no PostCSS config |
 | ESLint | 9.39.5 | `eslint-config-next` core-web-vitals + typescript |
 | Motion | 14.1.0 | `motion/react` — the only animation library |
+| three.js | 0.186.1 | The Archive's realm only; dynamically imported when its section approaches |
 
-No GSAP, no three.js, no database, no backend, no analytics. Node 24 / npm 11 were used.
+No GSAP, no database, no backend, no analytics. Node 24 / npm 11 were used.
 
 ## Routes
 
@@ -29,15 +30,16 @@ No GSAP, no three.js, no database, no backend, no analytics. Node 24 / npm 11 we
 src/
   app/            layout, page, not-found, robots, sitemap, opengraph-image, work/[slug]
   components/
-    layout/       Container, SiteHeader, NavLinks (client), MobileNav (client), SiteFooter
+    layout/       Container, SiteFooter (no header navigation since 2026-10-16)
     sections/     Hero, SelectedWork, Approach, StickySteps (client), Capabilities, ProfileContact
-    projects/     ProjectEntry, ProjectArt, CaseStudy, Pipeline; ArtField, ProjectDetails (client)
+    projects/     ProjectArt, CaseStudy, Pipeline
+    realm/        RealmExplorer, InkName (client), Stop; scene.ts (three.js, loaded on demand)
     ui/           ActionLink, SectionHeading
     graphics/     DivergenceMark, BowDivider, RippleDivider (client); RidgeDivider
     motion/       Reveal, MaskedWords, Magnetic (client); RollText (CSS only)
-    world/        World, Drift, Atmosphere (client) — the home page's landscape and the landing
+    world/        World, Atmosphere (client) — the home page's landscape and the landing
   content/        site.ts, sections.ts, projects.ts, profile.ts   ← all public copy and facts
-  lib/            cn.ts, motion.ts
+  lib/            cn.ts, motion.ts, realm.ts (the realm's land, places and camera path), brush.ts
   styles/         tokens.css                                      ← design tokens
 tests/            content.test.mts
 docs/
@@ -58,9 +60,9 @@ docs/
 
 | Component | Why it needs the client |
 | --- | --- |
-| `MobileNav` | Toggle state, Escape and outside-press handling, focus return |
-| `NavLinks` | Scroll-spy (`IntersectionObserver`) for `aria-current` |
 | `Reveal` | Scroll-triggered reveal |
+| `RealmExplorer` | The Archive's realm: loads the scene, scroll-driven descent, looking around, travel, markers, arrival panel |
+| `InkName` | A project's name written by a brush on arrival (2D canvas) |
 | `Atmosphere` | The landing's WebGL landscape: time- and scroll-driven, runs only while visible |
 | `MaskedWords` | Once-only word reveal (shares `useRevealPhase` with `Reveal`) |
 | `Magnetic` | Pointer pull on primary actions |
@@ -105,8 +107,8 @@ docs/
   top, re-measured by a `ResizeObserver`. Stops live in a motion value, so transforms read the
   latest layout without re-rendering.
 - **`WindGust`** (removed 2026-10-16) was the canvas gust over the old hero; see "The landing".
-- **`Drift`** keeps a few motes in the world. Its animation loop runs only while the gust's
-  tail (`GUST` in `lib/motion.ts`) or the visitor's scrolling moves them, then stops.
+- **`Drift`** (removed 2026-10-16) drew motes that streaked into dashes in the wind. They read
+  as generic particles, so the wind is now shown only through the landing's mist.
 - **`ViewTransition`** pairs each archive artwork with its case-study header. React 19.3 and
   Next 16 support it without configuration; browsers without the View Transitions API simply
   navigate.
@@ -184,12 +186,25 @@ its dependency chain:
 - **`Atmosphere`** is one fragment shader on raw WebGL (no library): value-noise fbm and ridged
   noise for five mountain ranges in aerial perspective, backlit by a glow behind the name; a sea
   of cloud between the far ranges; a mist band along each range's foot drifting at its own
-  speed; domain-warped clouds; a gust band that crosses at 2.4–4.2s; near wisps, grain and a
-  vignette. Uniforms: resolution, time (navigation clock, the same origin as the CSS reveal) and
+  speed; domain-warped clouds; near wisps, grain and a vignette. Uniforms: resolution, time (navigation clock, the same origin as the CSS reveal) and
   scroll progress through the landing. Scrolling raises and zooms the camera through the ranges
   at depth-dependent rates until the view is inside a parchment cloud bank.
   WebGL was adopted here because the brief asked for clouds and mountains with real depth and
   movement; the SVG layers could not move mist through the ranges convincingly.
+- **The gust (`gustAt`)** is a ragged front crossing left to right from 2.4s to 4.6s. For each
+  point it gives how far the front has passed (`k`), how hard the wind blows there now (`w`)
+  and how far the air has been carried (`D`). Every mist, cloud and fog layer is displaced by
+  `D` (scaled by depth, with a slow height-dependent shear so layers slide past each other) and
+  churned by `w`. The opening fog is torn and carried off as the front passes; cloud streams
+  off the lee of the far peaks. Wind-stretched textures use `fbmx`, an fbm without octave
+  rotation, because rotated octaves turn horizontal streaks into slanted and vertical ones; the
+  churn is mostly vertical for the same reason (a strong sideways warp folds mist into
+  vertical lines).
+- **Front layer**: a second `Atmosphere` (`layer="front"`, compiled with `#define FRONT`) sits
+  above the name with a transparent canvas and draws only the driven mist: a wall that rolls
+  in at the front and tears into ribbons behind it, so the name comes through the mist rather
+  than being masked. It draws nothing before 2.4s, clears itself and stops for good after
+  6.2s, and is skipped under reduced motion or when hydration arrives after the gust.
 - **Cost controls**: renders at 0.62× (desktop) / 0.5× (under 768px) of CSS pixels × min(DPR, 1.5),
   stepping down to no less than 0.36× if over a third of 90 frames exceed 24ms. The loop runs only
   while the section intersects the viewport and the tab is visible. On context loss the canvas
@@ -201,8 +216,56 @@ its dependency chain:
   name from 3s). Everything after it uses `animation-timeline: scroll(root)` inside
   `@supports (animation-timeline: scroll())`, so it reverses exactly and needs no JavaScript.
   Browsers without scroll-driven animations get the landing at rest with everything visible.
-- **Header**: `body:has([data-landing]) .site-header` stays hidden until 30–60vh of scroll, only on
-  the home page and never while it holds focus.
-- **Layout**: `#top` is a 300svh section with a sticky 100svh viewport, pulled up under the header.
+- **Layout**: `#top` is a 180svh section with a sticky 100svh viewport; the camera only rises
+  (`reach` 0.45), then the section scrolls away into the realm. (The header it once hid was
+  removed on 2026-10-16.)
 - **Development aid**: `?arrival=<seconds>` holds the shader at that moment and preserves the drawing
-  buffer for screenshots; the branch is removed from production builds.
+  buffer for screenshots; while held, setting `window.__arrival` moves the frame without a
+  reload. The branch is removed from production builds.
+
+## The Archive as a realm (2026-10-16)
+
+Replaces the brush passage and the three-column showcase. The projects are places in one
+world the visitor can explore.
+
+- **Rendering: three.js.** The brief asks for genuine spatial exploration — a camera that
+  descends through clouds, looks around and flies between places. A heightfield, lathed stone
+  pillars, instanced trees, transparent cloud layers and procedural buildings need a real
+  scene graph and depth buffer, which the landing's single full-screen shader does not give.
+  three.js is the smallest dependency that does; it is imported dynamically when the section
+  comes within 1.5 screens, so the first screen does not pay for it. React Three Fiber was not
+  added: one imperative scene inside one effect needs no reconciler.
+- **One shading model** (`realm/scene.ts`): ink-wash tone from slope and height, vertical
+  texture strokes (cun) on rock faces, moonlit rims, and height fog with low valley mist, tinted
+  by the destination the camera is nearest (moon, jade, dusk). Colours come from the tokens via
+  `palette-vars`; `ColorManagement` is off and output is linear, so tokens render as written.
+- **The land is data** (`lib/realm.ts`): seeded noise for the heightfield, pillars placed with
+  clear sightlines to each destination, the three destinations (anchor, arrival view, route
+  waypoints, mood), and the camera's descent as keyframes. Nothing is random at runtime, so
+  places stay where they are on every visit and device.
+- **Destinations** are framed by the three distances of Chinese landscape painting: the Sentinel
+  Spire (high distance — a watchtower on the tallest pillar, its beam sweeping the realm) for the
+  phishing platform; the Ledger Bridge (deep distance — a stone arch joining two pillars, two
+  ledgers reconciled) for the GST platform; the Echo Lake (level distance — a pale orb over its
+  own ripples, after the ECHOSS site's hero) for ECHOSS.
+- **Track and stage.** A tall track holds a sticky stage: 3 screens drive the descent (veil →
+  overview above the clouds → through them → the terrace), then 1.2 screens hold the visitor on
+  the terrace. `data-phase` on the stage shows each overlay only in its phases.
+- **Travel** is a Catmull–Rom flight along the route's waypoints (2.6–4.6s, eased), with a small
+  field-of-view swell; looking around is a yaw/pitch offset from drag, swipe, arrow keys or a
+  mouse lean. On arrival `setViewOffset` shifts the picture so the place stays clear of the panel.
+- **The guiding wind**: instanced ginkgo leaves (shape drawn in the fragment shader) stream
+  along a focused route or around the camera in flight, then fade. A nod to the guiding wind
+  that replaces a minimap in Ghost of Tsushima: the world itself points the way.
+- **Readable and accessible**: the destination list (always reachable by keyboard), markers
+  (pointer convenience, hidden from assistive technology), the live-region announcement and the
+  arrival panel are HTML. The panel takes focus on arrival; Escape returns to the terrace.
+- **Fallbacks**: without JavaScript or WebGL, or if the context is lost, the section renders
+  the atlas — the same three destinations as a plain list. Under reduced motion the realm holds
+  still, the descent is skipped and the camera cuts instead of flying; the brush name appears
+  whole.
+- **Cost**: terrain 320² (190² on small or low-core devices), DPR ≤ 1.5 (≤ 1.25 narrow), frames
+  only while the stage intersects the viewport and the tab is visible.
+- **Research behind it**: destination-map portfolios that open a panel on arrival, scroll-to-
+  spline camera paths (Codrops), height-based ground fog in three.js, Google's guidance on
+  accessible 3D markers, and Ghost of Tsushima's guiding wind. No layout or identity was copied.

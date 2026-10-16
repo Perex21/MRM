@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Geist, Geist_Mono } from "next/font/google";
 import { SiteFooter } from "@/components/layout/SiteFooter";
-import { SiteHeader } from "@/components/layout/SiteHeader";
 import { site } from "@/content/site";
 import "./globals.css";
 
@@ -11,6 +10,17 @@ const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
   weight: ["500", "600"],
   display: "swap",
+});
+
+// The brush's hand: the same face in italic, for the names the brush writes and
+// the project titles they become. Not preloaded; it is first needed below the fold.
+const cormorantItalic = Cormorant_Garamond({
+  variable: "--font-cormorant-italic",
+  subsets: ["latin"],
+  weight: "500",
+  style: "italic",
+  display: "swap",
+  preload: false,
 });
 
 const geistSans = Geist({
@@ -58,7 +68,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${cormorant.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
+      className={`${cormorant.variable} ${cormorantItalic.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
     >
       <body className="surface-ink flex min-h-svh flex-col">
         <a
@@ -67,7 +77,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         >
           Skip to content
         </a>
-        <SiteHeader />
         <main id="main" tabIndex={-1} className="flex-1 focus:outline-none">
           {children}
         </main>

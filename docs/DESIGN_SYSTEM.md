@@ -76,7 +76,7 @@ unrolled in front of the view, so when ink returns the landscape has moved on.
 | Scene | Section | Surface | World |
 | --- | --- | --- | --- |
 | The Arrival | Hero | Ink | Its own landscape (`Atmosphere`); ends in a parchment cloud bank |
-| The Archive | Selected work | Paper | Covered |
+| The Archive | Selected work | Its own realm (three.js) | Covered by the realm's stage |
 | The Path | Engineering approach | Ink | Mist parts, ranges sink as the land opens, path winds further |
 | The Disciplines | Technical capabilities | Ink | Mist gathers among the ranges; a first trace of the sun |
 | The Record | Professional profile | Paper | Covered; the quietest scene |
@@ -98,9 +98,9 @@ visitor to scroll.
 
 | Time from load | Event |
 | --- | --- |
-| 0–2s | An ink veil lifts; dense fog over five ranges thins, the far ranges emerging first. Clouds billow, mist drifts along the foot of each range, a sea of cloud moves between the far ranges |
-| 2.4–4.2s | A gust crosses from left to right: a band of driven mist with fine streaks, pushing the clouds and the cloud sea downwind |
-| 3s | The name, and only the name, is uncovered by a wind-torn mask; each letter settles from a lean and blur, 70ms apart, with a band of mist travelling across it |
+| 0–2.4s | An ink veil lifts; dense, lit fog lies in banks over five ranges and thins, the near ranges emerging first and the far ones after. Clouds billow, mist drifts along the foot of each range, a sea of cloud moves between the far ranges |
+| 2.4–4.6s | A gust crosses from left to right. The wind itself is never drawn: a wall of mist rolls across the ranges and tears into ribbons behind its front, the fog is carried off the valley, the clouds and the cloud sea are shoved downwind, and cloud streams off the lee of the peaks |
+| 3s | The name, and only the name, condenses out of the mist as the front passes it: each letter clears from a blur and settles against the wind, 85ms apart, while the driven mist streams across in front of it |
 | 4.6s | A hairline road draws down from below the name — the only hint to scroll |
 
 | Scroll | Event |
@@ -203,3 +203,18 @@ processing stages. Following a project morphs its artwork into the case-study he
 `ViewTransition`, class `morph`).
 
 One primary motion per element. Scroll is never taken over.
+
+## The realm (the Archive)
+
+| Stage | What the visitor sees |
+| --- | --- |
+| Veil | The landing's dark mist continues; the realm fades up beneath it |
+| See the world | Above a sea of clouds: stone pillars, ranges, a moon; the three places glow through clearings, joined by thin golden routes; markers name them |
+| Enter | The camera dives through the clouds — moving wisps — and levels onto a terrace with a stone balustrade and two lanterns |
+| Explore | From the terrace all three places are in view on desktop; look around by drag, swipe, arrow keys or a mouse lean |
+| Travel | The camera follows the chosen golden route; ginkgo leaves stream with it |
+| Arrive | The picture shifts aside, a parchment panel opens, the brush writes the name, the details unfold |
+
+Accents: antique gold (`gold`, `gold-light`, `gold-deep`) for routes, markers, beacons and leaves
+only; cinnabar for the Sentinel's beacon and the primary action; jade and silver in the land and
+mist. Each place tints the air: the Spire moonlit, the Bridge jade, the Lake dusk-warm.

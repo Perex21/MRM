@@ -3,7 +3,6 @@
 
 @layer base {
   html {
-    scroll-padding-top: calc(var(--spacing-header) + 1rem);
     -webkit-text-size-adjust: 100%;
   }
 
@@ -140,9 +139,9 @@
  *   and at three seconds the name emerges through the mist, letter by letter,
  *   as the gust (drawn by Atmosphere) crosses it.
  * - The page's own scroll position, for everything after: scroll-driven
- *   animations bring in the header and the intro, lift the name, then carry it
- *   off as the camera travels into the clouds and the cloud bank closes into
- *   the paper of the Archive. They follow the visitor in both directions.
+ *   animations lift the name and bring in the intro beneath it. They follow
+ *   the visitor in both directions. Then the scene scrolls away into the
+ *   realm of the Archive (RealmExplorer), which begins in the same dark mist.
  * Base styles are the composition at rest, so reduced motion, no JavaScript
  * and browsers without scroll-driven animations all see every element.
  */
@@ -155,42 +154,17 @@
 @keyframes arrival-letter {
   0% {
     opacity: 0;
-    transform: translate3d(-0.32em, 0.12em, 0) scale(1.08);
-    filter: blur(18px);
+    transform: translate3d(-0.2em, 0, 0);
+    filter: blur(16px);
   }
-  45% {
-    opacity: 0.75;
-    filter: blur(5px);
+  40% {
+    opacity: 0.55;
+    filter: blur(6px);
   }
   100% {
     opacity: 1;
     transform: none;
     filter: none;
-  }
-}
-
-@keyframes arrival-unveil {
-  from {
-    -webkit-mask-position: 100% 0;
-    mask-position: 100% 0;
-  }
-  to {
-    -webkit-mask-position: 0% 0;
-    mask-position: 0% 0;
-  }
-}
-
-@keyframes arrival-mist {
-  from {
-    opacity: 0;
-    transform: translateX(-70%);
-  }
-  30% {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-    transform: translateX(240%);
   }
 }
 
@@ -205,39 +179,14 @@
   animation: arrival-veil 1.8s var(--ease-entrance) 0.15s backwards;
 }
 
-/* Each letter is carried in on the wind as the gust passes it, left to right. */
+/*
+ * Each letter condenses out of the mist as the gust front passes it, left to
+ * right, settling against the wind. The driven mist itself is drawn over the
+ * name by Atmosphere's front layer.
+ */
 @utility arrival-letter {
   display: inline-block;
-  animation: arrival-letter 1.6s var(--ease-settle) calc(3000ms + var(--i, 0) * 70ms) both;
-}
-
-/* A wind-torn ink mask swept off the name with the gust. Fully open at rest. */
-@utility arrival-unveil {
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 100' preserveAspectRatio='none'%3E%3Cdefs%3E%3ClinearGradient id='f'%3E%3Cstop offset='0' stop-color='%23fff'/%3E%3Cstop offset='1' stop-color='%23fff' stop-opacity='0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='120' height='100' fill='%23fff'/%3E%3Crect x='118' width='30' height='100' fill='url(%23f)'/%3E%3Crect x='118' y='0.00' width='46' height='8.63' fill='url(%23f)'/%3E%3Crect x='118' y='8.33' width='22' height='8.63' fill='url(%23f)'/%3E%3Crect x='118' y='16.67' width='64' height='8.63' fill='url(%23f)'/%3E%3Crect x='118' y='25.00' width='34' height='8.63' fill='url(%23f)'/%3E%3Crect x='118' y='33.33' width='74' height='8.63' fill='url(%23f)'/%3E%3Crect x='118' y='41.67' width='28' height='8.63' fill='url(%23f)'/%3E%3Crect x='118' y='50.00' width='58' height='8.63' fill='url(%23f)'/%3E%3Crect x='118' y='58.33' width='40' height='8.63' fill='url(%23f)'/%3E%3Crect x='118' y='66.67' width='70' height='8.63' fill='url(%23f)'/%3E%3Crect x='118' y='75.00' width='30' height='8.63' fill='url(%23f)'/%3E%3Crect x='118' y='83.33' width='62' height='8.63' fill='url(%23f)'/%3E%3Crect x='118' y='91.67' width='48' height='8.63' fill='url(%23f)'/%3E%3C/svg%3E");
-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 100' preserveAspectRatio='none'%3E%3Cdefs%3E%3ClinearGradient id='f'%3E%3Cstop offset='0' stop-color='%23fff'/%3E%3Cstop offset='1' stop-color='%23fff' stop-opacity='0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='120' height='100' fill='%23fff'/%3E%3Crect x='118' width='30' height='100' fill='url(%23f)'/%3E%3Crect x='118' y='0.00' width='46' height='8.63' fill='url(%23f)'/%3E%3Crect x='118' y='8.33' width='22' height='8.63' fill='url(%23f)'/%3E%3Crect x='118' y='16.67' width='64' height='8.63' fill='url(%23f)'/%3E%3Crect x='118' y='25.00' width='34' height='8.63' fill='url(%23f)'/%3E%3Crect x='118' y='33.33' width='74' height='8.63' fill='url(%23f)'/%3E%3Crect x='118' y='41.67' width='28' height='8.63' fill='url(%23f)'/%3E%3Crect x='118' y='50.00' width='58' height='8.63' fill='url(%23f)'/%3E%3Crect x='118' y='58.33' width='40' height='8.63' fill='url(%23f)'/%3E%3Crect x='118' y='66.67' width='70' height='8.63' fill='url(%23f)'/%3E%3Crect x='118' y='75.00' width='30' height='8.63' fill='url(%23f)'/%3E%3Crect x='118' y='83.33' width='62' height='8.63' fill='url(%23f)'/%3E%3Crect x='118' y='91.67' width='48' height='8.63' fill='url(%23f)'/%3E%3C/svg%3E");
-  -webkit-mask-size: 250% 100%;
-  mask-size: 250% 100%;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-position: 0% 0;
-  mask-position: 0% 0;
-  animation: arrival-unveil 1s linear 2950ms both;
-}
-
-/* A band of mist crossing the name with the gust. */
-@utility arrival-mist {
-  position: absolute;
-  inset-block: -30%;
-  left: 0;
-  width: 45%;
-  pointer-events: none;
-  background: radial-gradient(
-    ellipse 50% 50% at 50% 50%,
-    color-mix(in srgb, var(--color-parchment) 22%, transparent),
-    transparent 70%
-  );
-  opacity: 0;
-  animation: arrival-mist 1.4s var(--ease-entrance) 2850ms 1;
+  animation: arrival-letter 1.7s var(--ease-settle) calc(3000ms + var(--i, 0) * 85ms) both;
 }
 
 /* The road drawn down from the name once it has settled. */
@@ -245,11 +194,6 @@
   transform-origin: top;
   background: linear-gradient(to bottom, var(--color-silver-dim), transparent);
   animation: arrival-road 1.4s var(--ease-settle) 4.6s both;
-}
-
-/* At rest: a soft paper glow at the foot of the scene, handing off to the Archive. */
-@utility arrival-cloudbank {
-  background: linear-gradient(to top, var(--color-parchment), transparent 28%);
 }
 
 @utility arrival-stack {
@@ -276,51 +220,19 @@
   }
 }
 
-@keyframes arrival-depart {
-  to {
-    opacity: 0;
-    transform: translateY(-14vh);
-  }
-}
-
 @keyframes arrival-fade {
   to {
     opacity: 0;
   }
 }
 
-@keyframes arrival-close {
-  from {
-    opacity: 0;
-  }
-}
-
-@keyframes header-arrive {
-  from {
-    opacity: 0;
-    transform: translateY(-100%);
-    visibility: hidden;
-  }
-}
-
 @supports (animation-timeline: scroll()) {
   @media (prefers-reduced-motion: no-preference) {
-    /* Only the name until the visitor scrolls: the header waits too. */
-    body:has([data-landing]) .site-header:not(:focus-within) {
-      animation: header-arrive linear both;
-      animation-timeline: scroll(root);
-      animation-range: 30vh 60vh;
-    }
-
-    /* As scrolling begins the name lifts and gives way to the intro; later both leave upward. */
+    /* As scrolling begins the name lifts and gives way to the intro. */
     .arrival-stack {
-      animation:
-        arrival-rise linear both,
-        arrival-depart linear both;
-      animation-timeline: scroll(root), scroll(root);
-      animation-range:
-        0 45vh,
-        120vh 170vh;
+      animation: arrival-rise linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 45vh;
     }
 
     .arrival-name {
@@ -343,15 +255,108 @@
       animation-timeline: auto, scroll(root);
       animation-range: normal, 0 14vh;
     }
-
-    /* The camera ends inside a cloud bank that closes into paper. */
-    .arrival-cloudbank {
-      background: var(--color-parchment);
-      animation: arrival-close linear both;
-      animation-timeline: scroll(root);
-      animation-range: 150vh 200vh;
-    }
   }
+}
+
+/* Hands the palette to canvases (the realm, the brush) that cannot read Tailwind's theme. */
+@utility palette-vars {
+  --pv-ink: var(--color-ink);
+  --pv-ink-raised: var(--color-ink-raised);
+  --pv-jade: var(--color-jade);
+  --pv-silver: var(--color-silver);
+  --pv-parchment: var(--color-parchment);
+  --pv-cinnabar: var(--color-cinnabar);
+  --pv-gold: var(--color-gold);
+  --pv-bamboo: var(--color-bamboo);
+  --pv-bamboo-deep: var(--color-bamboo-deep);
+}
+
+/*
+ * The realm (RealmExplorer). The stage's data-phase follows the camera:
+ * veil → overview (above the clouds) → entering (in them) → home (on the
+ * terrace) → flight → arrived. Each overlay shows only in its phases.
+ */
+.realm-stage :is(.realm-when-explore, .realm-when-overview, .realm-when-home) {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 700ms var(--ease-entrance),
+    visibility 0s linear 700ms;
+}
+
+.realm-stage:is([data-phase="overview"], [data-phase="home"]) .realm-when-explore,
+.realm-stage[data-phase="overview"] .realm-when-overview,
+.realm-stage[data-phase="home"] .realm-when-home {
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity 700ms var(--ease-entrance),
+    visibility 0s;
+}
+
+/* The world fades up once it has drawn; until then the stage is ink. */
+.realm-canvas {
+  opacity: 0;
+  transition: opacity 900ms var(--ease-entrance);
+}
+
+.realm-stage[data-ready] .realm-canvas {
+  opacity: 1;
+}
+
+.realm-marker {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 500ms var(--ease-entrance),
+    visibility 0s linear 500ms;
+  will-change: transform;
+}
+
+/* Flipped: diamond on top, thread and label hanging below the place. */
+.realm-marker[data-flip="true"] .realm-marker-body {
+  flex-direction: column-reverse;
+  translate: 0 100%;
+}
+
+.realm-marker[data-on="true"] {
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity 500ms var(--ease-entrance),
+    visibility 0s;
+}
+
+/* On arrival the panel opens, the name is written, then the rest unfolds. */
+@keyframes realm-panel-in {
+  from {
+    opacity: 0;
+    transform: translate3d(2rem, 0, 0);
+    clip-path: inset(0 0 0 100%);
+  }
+}
+
+@keyframes realm-part-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+}
+
+.realm-panel {
+  animation: realm-panel-in 900ms var(--ease-settle) both;
+}
+
+.realm-panel:not([data-written="true"]) .realm-panel-part {
+  visibility: hidden;
+}
+
+.realm-panel[data-written="true"] .realm-panel-part {
+  animation: realm-part-in 700ms var(--ease-entrance) both;
+}
+
+.realm-panel[data-written="true"] .realm-panel-part + .realm-panel-part {
+  animation-delay: 160ms;
 }
 
 @utility anim-pop {
@@ -384,10 +389,10 @@
   }
 
   /*
-   * Archive artwork (ProjectEntry + ProjectArt). The frame opens to full
-   * bleed while the drawing settles from a slight zoom; each composition then
-   * plays its own small story. Desktop hover devices only — on touch the
-   * artwork simply rests in its open state.
+   * Project artwork (ProjectArt, in the case studies). Inside a hovered or
+   * focused .group, the frame opens to full bleed while the drawing settles
+   * from a slight zoom; each composition then plays its own small story.
+   * Desktop hover devices only — on touch the artwork rests in its open state.
    */
   .art-frame,
   .art-zoom,
@@ -404,7 +409,7 @@
     transform-origin: center;
   }
 
-  /* Pointer-following parts (ArtField sets --px/--py, -1…1). */
+  /* Pointer-following parts (--px/--py, -1…1; at rest without them). */
   .art-follow {
     transition:
       transform 500ms var(--ease-entrance),

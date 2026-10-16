@@ -1,7 +1,7 @@
 /**
  * Home-page section architecture, in the order the journey travels. Drives the
- * header, mobile menu, footer and the scroll-driven world, so navigation cannot
- * drift from the page. The hero (the Arrival) is chapter 01.
+ * footer navigation and the scroll-driven world, so neither can drift from the
+ * page. The hero (the Arrival) is chapter 01.
  */
 
 export type SectionId = "work" | "approach" | "capabilities" | "profile" | "contact";

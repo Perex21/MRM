@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  animate,
   motion,
   useMotionValue,
   useMotionValueEvent,
@@ -12,8 +11,6 @@ import {
 } from "motion/react";
 import { useEffect, useRef } from "react";
 import { interpolate, ridgePath } from "@/lib/landscape";
-import { GUST } from "@/lib/motion";
-import { Drift } from "./Drift";
 
 /*
  * The world behind the home page: one continuous landscape that the visitor
@@ -74,7 +71,8 @@ const FRAMES = {
   sunY: [42, 42, 42, 28, 18, 0, 0],
   sun: [0, 0, 0, 0.25, 0.55, 1, 1],
   draw: [0.34, 0.42, 0.5, 0.72, 0.84, 1, 1],
-  path: [0.85, 0.4, 0.4, 0.45, 0.4, 0.85, 0.85],
+  /** Hidden at the Arrival: the landing shows no marks, even before or without its shader. */
+  path: [0, 0.4, 0.4, 0.45, 0.4, 0.85, 0.85],
 } as const;
 
 type Frame = keyof typeof FRAMES;
@@ -111,31 +109,16 @@ export function World() {
   const sunY = useTransform(scrollYProgress, (p) => `${frame("sunY")(p)}vh`);
   const sun = useTransform(scrollYProgress, frame("sun"));
   const draw = useTransform(scrollYProgress, (p) => 1 - frame("draw")(p));
-  const pathOpacity = useTransform(scrollYProgress, frame("path"));
+  // Held still (reduced motion), the path stays in view for the scenes after the landing.
+  const pathOpacity = useTransform(scrollYProgress, (p) => (still ? FRAMES.path[1] : frame("path")(p)));
 
   // Sideways travel across the whole page, far ranges slowest.
   const farX = useTransform(scrollYProgress, (p) => `${still ? 0 : p * -14}%`);
   const midX = useTransform(scrollYProgress, (p) => `${still ? 0 : p * -30}%`);
   const nearX = useTransform(scrollYProgress, (p) => `${still ? 0 : p * -48}%`);
 
-  // The opening gust shoves the mist banks hard downwind as its front passes; they drift partway back.
-  const gust = useMotionValue(0);
-  useEffect(() => {
-    if (still) return;
-    const elapsed = performance.now() - GUST.start;
-    if (elapsed > GUST.duration) return;
-    const controls = animate(gust, [0, 0, 18, 6], {
-      duration: GUST.duration / 1000,
-      times: [0, 0.2, 0.5, 1],
-      ease: [0.33, 0, 0.2, 1],
-      delay: Math.max(0, -elapsed) / 1000,
-    });
-    if (elapsed > 0) controls.time = elapsed / 1000;
-    return () => controls.stop();
-  }, [still, gust]);
-
-  const leftMist = useTransform([part, gust], ([p, g]: number[]) => `${g - p}vw`);
-  const rightMist = useTransform([part, gust], ([p, g]: number[]) => `${g * 1.4 + p}vw`);
+  const leftMist = useTransform(part, (p) => `${-p}vw`);
+  const rightMist = useTransform(part, (p) => `${p}vw`);
 
   // Keep the CSS draw-on of the Arrival and the scroll-driven extension from fighting:
   // once the visitor scrolls, the path is controlled by scroll alone.
@@ -186,8 +169,6 @@ export function World() {
         <circle cx="1010" cy="780" r="10" fill="none" stroke="var(--color-cinnabar-bright)" className="anim-ripple" style={{ "--delay": "1300ms" } as React.CSSProperties} />
         <circle cx="1010" cy="780" r="4.5" fill="var(--color-cinnabar-bright)" className="anim-pop" style={{ "--delay": "1250ms" } as React.CSSProperties} />
       </motion.svg>
-
-      {!still && <Drift />}
     </div>
   );
 }

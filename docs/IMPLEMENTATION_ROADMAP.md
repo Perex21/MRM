@@ -65,6 +65,28 @@ Verification in that session:
   canvas was confirmed drawing by pixel sampling (the test browser cannot screenshot a canvas
   under viewport emulation) and the page does not overflow. No console errors.
 
+### Mission 007 — the wind
+- The gust is now shown only through what it moves: fog carried off and torn, a wall of driven
+  mist in front of the name (new front layer), cloud streaming off the peaks. Removed the
+  streaked gust band, the strip mask and mist blob over the name, and the `Drift` motes.
+- Verified: lint, typecheck, tests, build. Frames rendered with the production shader source at
+  1024×640 and 300×650 (headless Edge, SwiftShader) from 0.8s to 7s, plus scroll states; the
+  real page rendered at 1280×800 at a held 3.6s. Not watched in motion at full frame rate.
+
+### Mission 008 — the realm
+- Removed the header navigation site-wide.
+- Replaced the brush passage and the three-column showcase with an explorable three.js realm:
+  descent above and through a sea of clouds onto a terrace, look-around, flights along golden
+  routes to three places, and on arrival the brush writing each project's name before its
+  details. Atlas fallback without JavaScript or WebGL; still realm with cuts under reduced
+  motion. The ECHOSS hero poster is shown at its place.
+- Verified: lint, typecheck, tests, build. Rendered in headless Edge (SwiftShader) over the
+  DevTools protocol at 1440×900 and 390×844: overview, inside the clouds, the terrace, the
+  guiding wind on a focused route, mid-flight, all three arrivals in sequence (Spire → Bridge →
+  Lake via "Travel on"), reduced motion (cut to the Lake), and the atlas with WebGL disabled.
+  Not checked: real GPUs and frame rates, 360/768/1024 widths by eye, touch dragging on a device,
+  screen readers.
+
 ## Not yet verified — do these first
 
 1. **Reduced motion in a real browser.** The test browser cannot emulate the preference.
@@ -75,7 +97,7 @@ Verification in that session:
    the shader's frame time on a mid-range phone and on integrated graphics.
 3. **The landing in Safari and Firefox.** Scroll-driven animations are not in every engine;
    those browsers should show the resting landing with everything visible.
-4. **Scroll performance on a mid-range phone** with the world layer and drift active.
+4. **Scroll performance on a mid-range phone** with the world layer active.
 5. **Case-study pages on a phone**, especially the flow schematic. Measured, not seen.
 6. **768, 1440 and 360 by eye** for the new scenes (measured only).
 7. **No-JavaScript rendering.** The server HTML contains no hidden content (checked), but the

@@ -16,6 +16,13 @@
   --color-jade: #52745b;
   --color-silver: #a9aaa3;
 
+  /* The realm's accents: ginkgo gold for routes, markers and leaves; the brush's bamboo */
+  --color-gold: #c39532;
+  --color-gold-light: #e2bf6a;
+  --color-gold-deep: #85601b;
+  --color-bamboo: #a98a5c;
+  --color-bamboo-deep: #6b5536;
+
   /* Derived tints — exist only to meet text contrast on a given surface */
   --color-cinnabar-hover: #b33338;
   --color-cinnabar-deep: #6f1c20; /* carved lines on the seal */
@@ -43,7 +50,6 @@
   /* Layout */
   --spacing-gutter: clamp(1.25rem, 4vw, 3rem);
   --spacing-section: clamp(5rem, 11vw, 9.5rem);
-  --spacing-header: 4.5rem;
   --container-page: 82rem;
   --container-prose: 36rem;
 
@@ -55,6 +61,8 @@
 
 @theme inline {
   --font-display: var(--font-cormorant), "Iowan Old Style", Georgia, serif;
+  /* The brush's italic: names written in the Archive passage, project titles */
+  --font-brush: var(--font-cormorant-italic), "Iowan Old Style", Georgia, serif;
   --font-sans: var(--font-geist-sans), system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 

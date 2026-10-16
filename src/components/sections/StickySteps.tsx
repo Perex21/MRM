@@ -74,7 +74,7 @@ export function StickySteps({ headingId, chapter, scene, title, intro, steps }: 
 
   return (
     <div className="grid gap-x-12 gap-y-14 lg:grid-cols-12">
-      <div className="lg:sticky lg:top-[calc(var(--spacing-header)+3rem)] lg:col-span-5 lg:self-start">
+      <div className="lg:sticky lg:top-12 lg:col-span-5 lg:self-start">
         <p className="label flex items-center gap-3 text-fg-faint">
           <DivergenceMark variant="glyph" className="size-5 text-accent" />
           <span>
@@ -134,7 +134,7 @@ export function StickySteps({ headingId, chapter, scene, title, intro, steps }: 
               <li
                 key={step.title}
                 id={stepId(index)}
-                className="relative scroll-mt-[calc(var(--spacing-header)+2rem)] pl-12 sm:pl-16"
+                className="relative scroll-mt-8 pl-12 sm:pl-16"
               >
                 {/* Node on the rail; the active step branches off it. */}
                 <span aria-hidden="true" className="absolute top-12 left-0 flex size-6 items-center justify-center md:top-16">

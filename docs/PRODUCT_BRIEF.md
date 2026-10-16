@@ -30,7 +30,7 @@ Divergence: a straight path and one stroke that leaves it.
 | # | Section / route | Anchor or path | Content |
 | --- | --- | --- | --- |
 | 01 | The Arrival — hero | `/` | A living landscape; the name alone after 3s; role, statement and two actions on scroll |
-| 02 | The Archive — selected work | `/#work` | Three project discoveries linking to case studies |
+| 02 | The Archive — selected work | `/#work` | An explorable realm: three projects as three places, each with its details and a link to its case study |
 | 03 | The Path — engineering approach | `/#approach` | Five principles, each tied to a project |
 | 04 | The Disciplines — technical capabilities | `/#capabilities` | Five hanging scrolls, each item linked to the work that used it |
 | 05 | The Record — professional profile | `/#profile` | GitHub and LinkedIn; résumé when one exists |

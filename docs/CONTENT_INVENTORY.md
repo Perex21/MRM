@@ -114,3 +114,12 @@ whether the project may be shown publicly at all. **Owner to confirm it can be l
 4. Supply real screenshots, measured results, and dates if they exist.
 5. Confirm the ECHOSS project may be public.
 6. Set `NEXT_PUBLIC_SITE_URL` when a domain is chosen.
+
+## The realm (2026-10-16) — `src/lib/realm.ts`, `src/components/sections/SelectedWork.tsx`
+
+| Item | Source | Note |
+| --- | --- | --- |
+| Names the brush writes (`brushName`): "Hybrid Phishing Detection Platform", "AI-powered GST Audit & Compliance Platform", "ECHOSS STUDIO" | The owner's own wording in the brief | The panel's heading and the case study keep the full titles |
+| Place names (Sentinel Spire, Ledger Bridge, Echo Lake) and their "distances" | Design | Names of places in an illustration, not claims about the projects |
+| ECHOSS hero poster (`public/work/echoss/hero-poster.webp`) | `Desktop/EchossStudio/public/media/hero/poster-landscape.webp`, used by `hero-section.tsx`; `hero-shader.ts` says a CPU port of the globe shader renders the posters | Caption: a still rendered from the site's own globe shader |
+| No screenshots for the phishing and GST projects | `Perex21/Phishing-Automation` holds only the Vite template's `hero.png`; `Perex21/gst-compliance-agent` holds no images | Their places carry the visual weight instead |
