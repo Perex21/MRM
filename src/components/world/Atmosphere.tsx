@@ -2,6 +2,7 @@
 
 import { useReducedMotion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
+import { createGovernor, perfProbe } from "@/lib/frames";
 
 /*
  * The Arrival's living landscape, drawn by one fragment shader on raw WebGL
@@ -391,6 +392,7 @@ export function Atmosphere({ sectionId, layer = "back", reach = 1, className }: 
 
     let drawn = false;
     let finished = false;
+    const probe = perfProbe(front ? "landing-front" : "landing", gl);
     const draw = (now: number) => {
       // In development `window.__arrival` can move a held frame without reloading.
       const scrub = isHeld ? (window as unknown as { __arrival?: number }).__arrival : undefined;
@@ -408,7 +410,8 @@ export function Atmosphere({ sectionId, layer = "back", reach = 1, className }: 
       // Under reduced motion: one settled frame, after the fog has cleared and the gust has passed.
       gl.uniform1f(uTime, time);
       gl.uniform1f(uScroll, prefersReducedMotion ? 0 : progress());
-      gl.drawArrays(gl.TRIANGLES, 0, 3);
+      if (probe) probe.time(() => gl.drawArrays(gl.TRIANGLES, 0, 3));
+      else gl.drawArrays(gl.TRIANGLES, 0, 3);
       if (!drawn) {
         drawn = true;
         setReady(true);
@@ -420,7 +423,14 @@ export function Atmosphere({ sectionId, layer = "back", reach = 1, className }: 
     let samples = 0;
     let slow = 0;
     let last = performance.now();
+    // Paced to an even cadence of at least 60 fps (72 on a 144 Hz screen), not every refresh.
+    const pace = createGovernor({ min: 1 });
     const loop = (now: number) => {
+      if (!pace.due(now)) {
+        frame = visible && !document.hidden && !finished ? requestAnimationFrame(loop) : 0;
+        return;
+      }
+      pace.rendered(now);
       // Adapt: if frames keep running long, drop the internal resolution (down to a floor).
       const dt = now - last;
       last = now;

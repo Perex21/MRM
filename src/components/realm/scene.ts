@@ -16,6 +16,7 @@
  */
 
 import * as THREE from "three";
+import { perfProbe } from "@/lib/frames";
 import {
   CLOUD_SEA,
   DESCENT,
@@ -975,6 +976,7 @@ export function createRealm(canvas: HTMLCanvasElement, options: RealmOptions): R
     leaves.instanceMatrix.needsUpdate = true;
   };
 
+  const probe = perfProbe("realm", renderer.getContext());
   let last = 0;
   const realm: Realm = {
     get at() {
@@ -1065,7 +1067,8 @@ export function createRealm(canvas: HTMLCanvasElement, options: RealmOptions): R
       sky.position.copy(camera.position);
       updateAtmosphere();
       updateLife(dt);
-      renderer.render(scene, camera);
+      if (probe) probe.time(() => renderer.render(scene, camera));
+      else renderer.render(scene, camera);
     },
     anchors() {
       return DESTINATIONS.map((d) => {

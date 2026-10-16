@@ -2,6 +2,7 @@
 
 import { useReducedMotion } from "motion/react";
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { createGovernor } from "@/lib/frames";
 import type { Realm } from "./scene";
 import { Stop, type StopData } from "./Stop";
 
@@ -142,8 +143,15 @@ function World({ stops, chapter, scene, title, still }: RealmExplorerProps & { s
       realm.resize(canvas.clientWidth, canvas.clientHeight, Math.min(window.devicePixelRatio || 1, narrow ? 1.25 : 1.5));
     };
 
+    // Paced to an even cadence of at least 60 fps (72 on a 144 Hz screen), not every refresh.
+    const pace = createGovernor({ min: 1 });
     const loop = (now: number) => {
       if (!realm) return;
+      if (!pace.due(now)) {
+        frame = visible && !document.hidden ? requestAnimationFrame(loop) : 0;
+        return;
+      }
+      pace.rendered(now);
       const p = descentOf();
       descentRef.current = p;
       realm.setDescent(p);
@@ -397,7 +405,7 @@ function World({ stops, chapter, scene, title, still }: RealmExplorerProps & { s
               className="realm-marker group absolute top-0 left-0"
             >
               <span className="realm-marker-body flex -translate-x-1/2 -translate-y-full flex-col items-center">
-                <span className="flex min-h-11 min-w-11 flex-col items-start justify-center border border-gold/35 bg-ink/75 px-3 py-2 text-left backdrop-blur-sm transition-colors duration-(--duration-hover) group-hover:border-gold md:px-4 md:py-2.5">
+                <span className="flex min-h-11 min-w-11 flex-col items-start justify-center border border-gold/35 bg-ink/90 px-3 py-2 text-left transition-colors duration-(--duration-hover) group-hover:border-gold md:px-4 md:py-2.5">
                   <span className="label text-gold">
                     {stop.number}
                     <span className="hidden md:inline"> · {stop.place}</span>
@@ -426,7 +434,7 @@ function World({ stops, chapter, scene, title, still }: RealmExplorerProps & { s
                   onFocus={() => focus(stop.slug)}
                   onBlur={() => focus(null)}
                   aria-describedby={`realm-${stop.slug}-about`}
-                  className="group flex min-h-12 items-baseline gap-3 border border-line bg-ink/70 px-4 py-3 text-left backdrop-blur-sm transition-colors duration-(--duration-hover) hover:border-gold focus-visible:border-gold"
+                  className="group flex min-h-12 items-baseline gap-3 border border-line bg-ink/90 px-4 py-3 text-left transition-colors duration-(--duration-hover) hover:border-gold focus-visible:border-gold"
                 >
                   <span className="label text-gold">{stop.number}</span>
                   <span>
