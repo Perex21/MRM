@@ -44,7 +44,7 @@ export function Drift() {
     }));
 
     // Wind left over from the gust, in px/s; decays to nothing.
-    let gustWind = performance.now() < GUST.start + GUST.duration + 400 ? 520 : 0;
+    let gustWind = performance.now() < GUST.start + GUST.duration + 400 ? 700 : 0;
     let scrollVelocity = 0;
     let lastScroll = window.scrollY;
     let last = performance.now();

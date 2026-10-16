@@ -16,7 +16,7 @@ const links: NavLink[] = sections.map((section) => ({
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-ink/90 backdrop-blur-sm">
+    <header className="site-header sticky top-0 z-40 border-b border-line bg-ink/90 backdrop-blur-sm">
       <Container className="flex h-(--spacing-header) items-center justify-between gap-3 lg:gap-6">
         <Link href="/" className="label inline-flex min-h-12 items-center gap-3">
           <DivergenceMark className="size-7" />

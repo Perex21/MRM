@@ -45,21 +45,44 @@ Verification in that session:
   at 1440; scroll down to the Destination and back up returns the world exactly; reduced motion
   by script-level simulation; 20 route × width combinations measured.
 
+### Mission 005 — the opening
+- A still beat (400ms), then a stronger gust: pressure wall, pushed mist sheets, bundled wind-line
+  streams, curling ink wisps, motes; the world's mist banks shoved downwind.
+- The name, brand line and title uncovered by a wind-torn ink mask; letters settle as the front
+  reaches each one. The canvas re-times every reveal to the front on the visitor's screen.
+- Verified: frames frozen at 380, 600, 900 and 1450ms (1440px) and 640ms (390px); production
+  run re-timed all 12 reveal animations with no console errors; resting state with all
+  animations removed shows every element fully visible.
+
+### Mission 006 — the landing
+- Replaced the hero, canvas gust and seal with one landing scene: a WebGL landscape
+  (`Atmosphere`), three seconds with no text or UI, then the name alone through the gust.
+  Header, role, statement and actions arrive on scroll; scrolling travels into the clouds,
+  which close into the Archive's paper. Archive now follows the landing directly.
+- Verified: lint, typecheck, tests, build. Animation state sampled at 1.5s and 2.9s (letters,
+  role, header all at opacity 0), 3.6s (letters arriving) and 6s (all in). Scroll timelines
+  sampled at 50, 130, 160 and 185vh. Shader frames seen at 1024px at 1.2s and 7s; at 390px the
+  canvas was confirmed drawing by pixel sampling (the test browser cannot screenshot a canvas
+  under viewport emulation) and the page does not overflow. No console errors.
+
 ## Not yet verified — do these first
 
 1. **Reduced motion in a real browser.** The test browser cannot emulate the preference.
-   Turn on the OS setting and check: no gust, the name visible at once, a still landscape,
-   menu opens instantly, seal changes without animation.
-2. **The live gust at full frame rate**, on a real phone and a desktop. The test browser
-   throttles animation frames, so the gust was inspected frozen, not watched in motion.
-3. **Scroll performance on a mid-range phone** with the world layer and drift active.
-4. **Case-study pages on a phone**, especially the flow schematic. Measured, not seen.
-5. **768 and 1024 by eye** for the new scenes (measured only).
-6. **No-JavaScript rendering.** The server HTML contains no hidden content (checked), but the
+   Turn on the OS setting and check: a still landscape, the name, role, actions and header
+   visible at once, menu opens instantly.
+2. **The landing at full frame rate**, on a real phone and a desktop. The test browser
+   throttles animation frames, so frames were inspected held, not watched in motion. Check
+   the shader's frame time on a mid-range phone and on integrated graphics.
+3. **The landing in Safari and Firefox.** Scroll-driven animations are not in every engine;
+   those browsers should show the resting landing with everything visible.
+4. **Scroll performance on a mid-range phone** with the world layer and drift active.
+5. **Case-study pages on a phone**, especially the flow schematic. Measured, not seen.
+6. **768, 1440 and 360 by eye** for the new scenes (measured only).
+7. **No-JavaScript rendering.** The server HTML contains no hidden content (checked), but the
    page was not loaded with scripts disabled.
-7. **Screen reader pass** and an automated audit (axe, Lighthouse).
-8. **Other browsers** — only one Chromium-based browser was used.
-9. **HTTP status for unknown case-study slugs.** They render the 404 page with `noindex` but
+8. **Screen reader pass** and an automated audit (axe, Lighthouse).
+9. **Other browsers** — only one Chromium-based browser was used.
+10. **HTTP status for unknown case-study slugs.** They render the 404 page with `noindex` but
    answer 200, in the production build too. Decide whether a true 404 status is worth making
    the route block instead of stream.
 
@@ -72,5 +95,5 @@ Verification in that session:
 
 ## Deferred until a feature needs them
 
-GSAP, three.js, page transitions, a CMS, analytics, a contact form with a backend,
+GSAP, three.js (the landing uses raw WebGL), page transitions, a CMS, analytics, a contact form with a backend,
 light/dark toggle, interface tests.

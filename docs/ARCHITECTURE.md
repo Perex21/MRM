@@ -33,9 +33,9 @@ src/
     sections/     Hero, SelectedWork, Approach, StickySteps (client), Capabilities, ProfileContact
     projects/     ProjectEntry, ProjectArt, CaseStudy, Pipeline; ArtField, ProjectDetails (client)
     ui/           ActionLink, SectionHeading
-    graphics/     DivergenceMark, Seal, BowDivider, RippleDivider (client); RidgeDivider
+    graphics/     DivergenceMark, BowDivider, RippleDivider (client); RidgeDivider
     motion/       Reveal, MaskedWords, Magnetic (client); RollText (CSS only)
-    world/        World, Drift, WindGust (client) — the home page's landscape and opening gust
+    world/        World, Drift, Atmosphere (client) — the home page's landscape and the landing
   content/        site.ts, sections.ts, projects.ts, profile.ts   ← all public copy and facts
   lib/            cn.ts, motion.ts
   styles/         tokens.css                                      ← design tokens
@@ -61,9 +61,7 @@ docs/
 | `MobileNav` | Toggle state, Escape and outside-press handling, focus return |
 | `NavLinks` | Scroll-spy (`IntersectionObserver`) for `aria-current` |
 | `Reveal` | Scroll-triggered reveal |
-| `Tilt` | Pointer-driven depth on project artwork |
-| `Seal` | The signature interaction; pointer lean and scroll depth |
-| `HeroLandscape` | Scroll and pointer depth on the ridges and path layer |
+| `Atmosphere` | The landing's WebGL landscape: time- and scroll-driven, runs only while visible |
 | `MaskedWords` | Once-only word reveal (shares `useRevealPhase` with `Reveal`) |
 | `Magnetic` | Pointer pull on primary actions |
 | `StickySteps` | Active-step tracking (`IntersectionObserver`) and the scroll-filled rail |
@@ -71,13 +69,13 @@ docs/
 
 ## Decisions
 
-- **Signature interaction is SVG + Motion, not WebGL.** The hero disc is a pressable seal
+- **(Superseded 2026-10-16, see "The landing".) Signature interaction is SVG + Motion, not WebGL.** The hero disc is a pressable seal
   that breaks along the Divergence. Three.js was considered and rejected for this build: the
   available test browser throttles animation frames and could not verify a WebGL scene, and
   the brief prefers a reliable SVG alternative over an unverified canvas. The seal server-renders
   intact, so the fallback is the first paint itself.
 - **Pointer-through text layer in the hero.** The text container ignores pointer events and each
-  text block opts back in at its own width, so the seal stays pressable around the title.
+  text block opts back in at its own width.
 - **Stretched link on archive rows.** The title link's `::after` covers the row: one link for
   keyboards, a large target for pointers. `Tilt` listens on the row (`zone`) because that overlay
   covers the artwork.
@@ -87,34 +85,28 @@ docs/
   for instant navigation. `generateMetadata` calls `notFound()` for unknown slugs.
 - **Navigation hrefs are root-relative hashes** (`/#work`), so the same header works from case
   studies and the 404. Breakpoint for the inline nav is `lg`.
-- **`#top` has no element.** Per the HTML spec a `#top` fragment with no matching id scrolls to
-  the top, so "Back to top" works on every page.
+- **"Back to top" uses `#top`.** On the home page that is the landing section; elsewhere no
+  element matches and, per the HTML spec, the fragment scrolls to the top.
 - **Canonical origin** comes from `NEXT_PUBLIC_SITE_URL`, falling back to `http://localhost:3000`.
   Until it is set, canonical, sitemap and Open Graph URLs point at localhost.
 - **Open Graph image** is generated at build with system fonts and the palette inlined, because it
   renders outside the CSS pipeline.
 - **No year in the footer**: reading the clock in a server component conflicts with
   `cacheComponents` prerendering.
-- **Hero disc is positioned in CSS**, not inside the landscape SVG, so cropping can never put
-  cinnabar behind body text. The landscape's road and path lines render from `md` up.
 
 ## The journey (2026-10-14)
 
-- **Section order** follows the journey: hero, approach, work, capabilities, profile, contact
+- **Section order** follows the journey: hero, work, approach, capabilities, profile, contact
+  (work moved first on 2026-10-16 so the landing's cloud bank hands straight into the Archive)
   (`content/sections.ts`, which also names each scene).
 - **`World`** is a fixed layer rendered only on the home page. Three procedurally generated
   ranges (`lib/landscape.ts`, deterministic, so server and client agree), two mist banks, the
   path and the sun. Scene values are interpolated over the scroll position of each section's
   top, re-measured by a `ResizeObserver`. Stops live in a motion value, so transforms read the
   latest layout without re-rendering.
-- **`WindGust`** is a full-viewport canvas above the content (`pointer-events: none`) that
-  plays once and unmounts. It is timed on the navigation clock, the same origin as CSS
-  animations, so it stays in step with the CSS name reveal; if hydration arrives too late it
-  skips itself. It sets `data-gust` on `<html>` (`playing`, `played`, `skipped`) for
-  diagnosis. Development builds accept `?gust=<ms>` to hold the gust still at that moment;
-  the branch is removed from production builds.
+- **`WindGust`** (removed 2026-10-16) was the canvas gust over the old hero; see "The landing".
 - **`Drift`** keeps a few motes in the world. Its animation loop runs only while the gust's
-  tail or the visitor's scrolling moves them, then stops.
+  tail (`GUST` in `lib/motion.ts`) or the visitor's scrolling moves them, then stops.
 - **`ViewTransition`** pairs each archive artwork with its case-study header. React 19.3 and
   Next 16 support it without configuration; browsers without the View Transitions API simply
   navigate.
@@ -186,3 +178,31 @@ its dependency chain:
   a true 404. Cause: the route streams its content, so the status is sent before the slug is
   checked. Harmless for visitors and for indexing; not yet fixed.
 - No deployment target is chosen. Nothing is deployed.
+
+## The landing (2026-10-16)
+
+- **`Atmosphere`** is one fragment shader on raw WebGL (no library): value-noise fbm and ridged
+  noise for five mountain ranges in aerial perspective, backlit by a glow behind the name; a sea
+  of cloud between the far ranges; a mist band along each range's foot drifting at its own
+  speed; domain-warped clouds; a gust band that crosses at 2.4–4.2s; near wisps, grain and a
+  vignette. Uniforms: resolution, time (navigation clock, the same origin as the CSS reveal) and
+  scroll progress through the landing. Scrolling raises and zooms the camera through the ranges
+  at depth-dependent rates until the view is inside a parchment cloud bank.
+  WebGL was adopted here because the brief asked for clouds and mountains with real depth and
+  movement; the SVG layers could not move mist through the ranges convincingly.
+- **Cost controls**: renders at 0.62× (desktop) / 0.5× (under 768px) of CSS pixels × min(DPR, 1.5),
+  stepping down to no less than 0.36× if over a third of 90 frames exceed 24ms. The loop runs only
+  while the section intersects the viewport and the tab is visible. On context loss the canvas
+  hides; without WebGL it never appears and the `World` layer shows through.
+- **Reduced motion**: one still frame (fog cleared, gust passed). Every `arrival-*` animation sits
+  inside `prefers-reduced-motion: no-preference`, so name, role, statement, actions and header are
+  visible at once.
+- **Choreography is CSS.** The opening is time-based from page load (ink veil lifts 0.15–1.95s,
+  name from 3s). Everything after it uses `animation-timeline: scroll(root)` inside
+  `@supports (animation-timeline: scroll())`, so it reverses exactly and needs no JavaScript.
+  Browsers without scroll-driven animations get the landing at rest with everything visible.
+- **Header**: `body:has([data-landing]) .site-header` stays hidden until 30–60vh of scroll, only on
+  the home page and never while it holds focus.
+- **Layout**: `#top` is a 300svh section with a sticky 100svh viewport, pulled up under the header.
+- **Development aid**: `?arrival=<seconds>` holds the shader at that moment and preserves the drawing
+  buffer for screenshots; the branch is removed from production builds.

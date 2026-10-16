@@ -57,8 +57,7 @@ export const stagger = {
 
 /**
  * The opening gust, in milliseconds after navigation start (performance.now()
- * and document.timeline share that origin). The canvas wind, the mist shove
- * and the CSS name reveal are all timed against it, so they stay in step even
- * when hydration is late. Mirrored as --gust-start in tokens.css.
+ * shares that origin with CSS animations). The landing shader draws it; the
+ * world's mist banks and the drifting motes are shoved by it in step.
  */
-export const GUST = { start: 150, duration: 1700 } as const;
+export const GUST = { start: 2400, duration: 1800 } as const;

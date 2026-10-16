@@ -135,20 +135,32 @@
 }
 
 /*
- * The Arrival. The name is carried in on the opening gust: each letter is
- * blown in from upwind — skewed, blurred, faint — and settles as the gust's
- * front passes it, left to right. A band of mist crosses the name with the
- * front. Times are offsets from --gust-start, the same clock as the canvas wind.
+ * The Arrival (Hero) runs on two clocks.
+ * - Time since page load, for the opening: the veil lifts on the landscape,
+ *   and at three seconds the name emerges through the mist, letter by letter,
+ *   as the gust (drawn by Atmosphere) crosses it.
+ * - The page's own scroll position, for everything after: scroll-driven
+ *   animations bring in the header and the intro, lift the name, then carry it
+ *   off as the camera travels into the clouds and the cloud bank closes into
+ *   the paper of the Archive. They follow the visitor in both directions.
+ * Base styles are the composition at rest, so reduced motion, no JavaScript
+ * and browsers without scroll-driven animations all see every element.
  */
-@keyframes gust-letter {
+@keyframes arrival-veil {
+  from {
+    opacity: 1;
+  }
+}
+
+@keyframes arrival-letter {
   0% {
     opacity: 0;
-    transform: translate3d(-0.75em, 0.06em, 0) skewX(-16deg);
-    filter: blur(10px);
+    transform: translate3d(-0.32em, 0.12em, 0) scale(1.08);
+    filter: blur(18px);
   }
-  55% {
-    opacity: 1;
-    filter: blur(1px);
+  45% {
+    opacity: 0.75;
+    filter: blur(5px);
   }
   100% {
     opacity: 1;
@@ -157,48 +169,189 @@
   }
 }
 
-@keyframes gust-mist {
+@keyframes arrival-unveil {
+  from {
+    -webkit-mask-position: 100% 0;
+    mask-position: 100% 0;
+  }
+  to {
+    -webkit-mask-position: 0% 0;
+    mask-position: 0% 0;
+  }
+}
+
+@keyframes arrival-mist {
   from {
     opacity: 0;
-    transform: translateX(-60%);
+    transform: translateX(-70%);
   }
-  35% {
+  30% {
     opacity: 1;
   }
   to {
     opacity: 0;
-    transform: translateX(260%);
+    transform: translateX(240%);
   }
 }
 
-@keyframes wipe-in {
+@keyframes arrival-road {
   from {
-    clip-path: inset(0 100% 0 0);
+    transform: scaleY(0);
   }
 }
 
-@utility gust-letter {
-  display: inline-block;
-  animation: gust-letter 1000ms var(--ease-settle) calc(var(--gust-start) + 260ms + var(--i, 0) * 60ms) both;
+@utility arrival-veil {
+  opacity: 0;
+  animation: arrival-veil 1.8s var(--ease-entrance) 0.15s backwards;
 }
 
-@utility gust-mist {
+/* Each letter is carried in on the wind as the gust passes it, left to right. */
+@utility arrival-letter {
+  display: inline-block;
+  animation: arrival-letter 1.6s var(--ease-settle) calc(3000ms + var(--i, 0) * 70ms) both;
+}
+
+/* A wind-torn ink mask swept off the name with the gust. Fully open at rest. */
+@utility arrival-unveil {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 100' preserveAspectRatio='none'%3E%3Cdefs%3E%3ClinearGradient id='f'%3E%3Cstop offset='0' stop-color='%23fff'/%3E%3Cstop offset='1' stop-color='%23fff' stop-opacity='0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='120' height='100' fill='%23fff'/%3E%3Crect x='118' width='30' height='100' fill='url(%23f)'/%3E%3Crect x='118' y='0.00' width='46' height='8.63' fill='url(%23f)'/%3E%3Crect x='118' y='8.33' width='22' height='8.63' fill='url(%23f)'/%3E%3Crect x='118' y='16.67' width='64' height='8.63' fill='url(%23f)'/%3E%3Crect x='118' y='25.00' width='34' height='8.63' fill='url(%23f)'/%3E%3Crect x='118' y='33.33' width='74' height='8.63' fill='url(%23f)'/%3E%3Crect x='118' y='41.67' width='28' height='8.63' fill='url(%23f)'/%3E%3Crect x='118' y='50.00' width='58' height='8.63' fill='url(%23f)'/%3E%3Crect x='118' y='58.33' width='40' height='8.63' fill='url(%23f)'/%3E%3Crect x='118' y='66.67' width='70' height='8.63' fill='url(%23f)'/%3E%3Crect x='118' y='75.00' width='30' height='8.63' fill='url(%23f)'/%3E%3Crect x='118' y='83.33' width='62' height='8.63' fill='url(%23f)'/%3E%3Crect x='118' y='91.67' width='48' height='8.63' fill='url(%23f)'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 100' preserveAspectRatio='none'%3E%3Cdefs%3E%3ClinearGradient id='f'%3E%3Cstop offset='0' stop-color='%23fff'/%3E%3Cstop offset='1' stop-color='%23fff' stop-opacity='0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='120' height='100' fill='%23fff'/%3E%3Crect x='118' width='30' height='100' fill='url(%23f)'/%3E%3Crect x='118' y='0.00' width='46' height='8.63' fill='url(%23f)'/%3E%3Crect x='118' y='8.33' width='22' height='8.63' fill='url(%23f)'/%3E%3Crect x='118' y='16.67' width='64' height='8.63' fill='url(%23f)'/%3E%3Crect x='118' y='25.00' width='34' height='8.63' fill='url(%23f)'/%3E%3Crect x='118' y='33.33' width='74' height='8.63' fill='url(%23f)'/%3E%3Crect x='118' y='41.67' width='28' height='8.63' fill='url(%23f)'/%3E%3Crect x='118' y='50.00' width='58' height='8.63' fill='url(%23f)'/%3E%3Crect x='118' y='58.33' width='40' height='8.63' fill='url(%23f)'/%3E%3Crect x='118' y='66.67' width='70' height='8.63' fill='url(%23f)'/%3E%3Crect x='118' y='75.00' width='30' height='8.63' fill='url(%23f)'/%3E%3Crect x='118' y='83.33' width='62' height='8.63' fill='url(%23f)'/%3E%3Crect x='118' y='91.67' width='48' height='8.63' fill='url(%23f)'/%3E%3C/svg%3E");
+  -webkit-mask-size: 250% 100%;
+  mask-size: 250% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: 0% 0;
+  mask-position: 0% 0;
+  animation: arrival-unveil 1s linear 2950ms both;
+}
+
+/* A band of mist crossing the name with the gust. */
+@utility arrival-mist {
   position: absolute;
-  inset-block: -20%;
+  inset-block: -30%;
   left: 0;
   width: 45%;
   pointer-events: none;
   background: radial-gradient(
     ellipse 50% 50% at 50% 50%,
-    color-mix(in srgb, var(--color-parchment) 18%, transparent),
+    color-mix(in srgb, var(--color-parchment) 22%, transparent),
     transparent 70%
   );
   opacity: 0;
-  animation: gust-mist 1500ms var(--ease-entrance) calc(var(--gust-start) + 320ms) 1;
+  animation: arrival-mist 1.4s var(--ease-entrance) 2850ms 1;
 }
 
-@utility anim-wipe {
-  animation: wipe-in 900ms var(--ease-settle) var(--delay, 0ms) both;
+/* The road drawn down from the name once it has settled. */
+@utility arrival-road {
+  transform-origin: top;
+  background: linear-gradient(to bottom, var(--color-silver-dim), transparent);
+  animation: arrival-road 1.4s var(--ease-settle) 4.6s both;
+}
+
+/* At rest: a soft paper glow at the foot of the scene, handing off to the Archive. */
+@utility arrival-cloudbank {
+  background: linear-gradient(to top, var(--color-parchment), transparent 28%);
+}
+
+@utility arrival-stack {
+  --arrival-offset: clamp(4rem, 11vh, 8rem);
+}
+
+@keyframes arrival-rise {
+  from {
+    transform: translateY(var(--arrival-offset));
+  }
+}
+
+@keyframes arrival-settle {
+  to {
+    transform: scale(0.72);
+  }
+}
+
+@keyframes arrival-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(2rem);
+    visibility: hidden;
+  }
+}
+
+@keyframes arrival-depart {
+  to {
+    opacity: 0;
+    transform: translateY(-14vh);
+  }
+}
+
+@keyframes arrival-fade {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes arrival-close {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes header-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(-100%);
+    visibility: hidden;
+  }
+}
+
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    /* Only the name until the visitor scrolls: the header waits too. */
+    body:has([data-landing]) .site-header:not(:focus-within) {
+      animation: header-arrive linear both;
+      animation-timeline: scroll(root);
+      animation-range: 30vh 60vh;
+    }
+
+    /* As scrolling begins the name lifts and gives way to the intro; later both leave upward. */
+    .arrival-stack {
+      animation:
+        arrival-rise linear both,
+        arrival-depart linear both;
+      animation-timeline: scroll(root), scroll(root);
+      animation-range:
+        0 45vh,
+        120vh 170vh;
+    }
+
+    .arrival-name {
+      transform-origin: 50% 100%;
+      animation: arrival-settle linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 45vh;
+    }
+
+    .arrival-intro:not(:focus-within) {
+      animation: arrival-arrive linear both;
+      animation-timeline: scroll(root);
+      animation-range: 10vh 45vh;
+    }
+
+    .arrival-road {
+      animation:
+        arrival-road 1.4s var(--ease-settle) 4.6s both,
+        arrival-fade linear both;
+      animation-timeline: auto, scroll(root);
+      animation-range: normal, 0 14vh;
+    }
+
+    /* The camera ends inside a cloud bank that closes into paper. */
+    .arrival-cloudbank {
+      background: var(--color-parchment);
+      animation: arrival-close linear both;
+      animation-timeline: scroll(root);
+      animation-range: 150vh 200vh;
+    }
+  }
 }
 
 @utility anim-pop {

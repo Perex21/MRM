@@ -8,10 +8,11 @@ import { section } from "@/content/sections";
 const { chapter, title, scene } = section("work");
 
 /**
- * The Archive — selected work, on paper, which rises out of the Path. Each
- * project is a discovery: its own illustration and pointer response, and a
- * flow plate that unrolls on request. Its foot bows down into the ink of the
- * Disciplines (see BowDivider in Capabilities).
+ * The Archive — selected work, on paper. The visitor arrives here out of the
+ * Arrival's cloud bank, which closes into this same parchment. Each project
+ * is a discovery: its own illustration and pointer response, and a flow plate
+ * that unrolls on request. Its foot bows down into the ink of the Path (see
+ * BowDivider in Approach).
  */
 export function SelectedWork() {
   return (

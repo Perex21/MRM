@@ -11,7 +11,7 @@ Core palette (given):
 | --- | --- | --- |
 | `ink` | `#101110` | Default ground |
 | `parchment` | `#E8E0D0` | Primary text on ink; paper ground |
-| `cinnabar` | `#9F292D` | The one saturated accent: seal, disc, primary action |
+| `cinnabar` | `#9F292D` | The one saturated accent: brand stamp, primary action |
 | `jade` | `#52745B` | Reserved for graphics / large elements; not yet used as a fill |
 | `silver` | `#A9AAA3` | Secondary text on ink |
 
@@ -21,7 +21,7 @@ Derived tints (added for contrast; ratios calculated, not tool-audited):
 | --- | --- | --- |
 | `cinnabar-bright` | `#CF5F5C` | Accent text on ink (~4.9:1). Raw cinnabar on ink is ~2.5:1 |
 | `cinnabar-hover` | `#B33338` | Hover fill for the primary action |
-| `cinnabar-deep` | `#6F1C20` | Carved lines on the seal |
+| `cinnabar-deep` | `#6F1C20` | Pressed state of the primary action |
 | `jade-bright` | `#8FB199` | Focus ring on ink (~8:1). Raw jade on ink is ~3.6:1 |
 | `silver-dim` | `#7D7E78` | Tertiary text on ink (~4.6:1) |
 | `ink-soft`, `ink-faint` | `#4B4D47`, `#5D5F58` | Secondary / tertiary text on parchment |
@@ -65,7 +65,7 @@ Scale (fluid): `text-display` 40–144px · `text-title` 36–68px · `text-head
 ## Borders and structure
 
 - 1px hairlines in `border-line` separate rows. No shadows, no rounded cards.
-- Corners are square, except the seal (2px) and the disc.
+- Corners are square.
 
 ## The journey (home page)
 
@@ -75,9 +75,9 @@ unrolled in front of the view, so when ink returns the landscape has moved on.
 
 | Scene | Section | Surface | World |
 | --- | --- | --- | --- |
-| The Arrival | Hero | Ink | Dense mist, ranges low, the path barely begun. The gust passes once |
-| The Path | Engineering approach | Ink | Mist parts, ranges sink as the land opens, path winds further |
+| The Arrival | Hero | Ink | Its own landscape (`Atmosphere`); ends in a parchment cloud bank |
 | The Archive | Selected work | Paper | Covered |
+| The Path | Engineering approach | Ink | Mist parts, ranges sink as the land opens, path winds further |
 | The Disciplines | Technical capabilities | Ink | Mist gathers among the ranges; a first trace of the sun |
 | The Record | Professional profile | Paper | Covered; the quietest scene |
 | The Destination | Contact | Ink | Mist settles, ranges rise, the path reaches the sun on the horizon |
@@ -93,14 +93,27 @@ live scroll position of each section and interpolated, so they reverse exactly.
 
 ### The Arrival
 
+Nothing but the landscape for three seconds, then the name alone. Everything else waits for the
+visitor to scroll.
+
 | Time from load | Event |
 | --- | --- |
-| 150ms | The gust begins at the left edge: ribbons of wind (one fine cinnabar), broad faint mist bands, motes |
-| ~300ms | The brand line is wiped in |
-| ~600–800ms | The gust front crosses the name; each letter is blown in from upwind (skewed, blurred) and settles as it passes; a band of mist crosses with it |
-| ~1s | The seal lands where the gust has passed |
-| ~1.15–1.3s | Role, statement and actions settle |
-| ~1.85s | The gust has dissipated; motes it carried drift to rest |
+| 0–2s | An ink veil lifts; dense fog over five ranges thins, the far ranges emerging first. Clouds billow, mist drifts along the foot of each range, a sea of cloud moves between the far ranges |
+| 2.4–4.2s | A gust crosses from left to right: a band of driven mist with fine streaks, pushing the clouds and the cloud sea downwind |
+| 3s | The name, and only the name, is uncovered by a wind-torn mask; each letter settles from a lean and blur, 70ms apart, with a band of mist travelling across it |
+| 4.6s | A hairline road draws down from below the name — the only hint to scroll |
+
+| Scroll | Event |
+| --- | --- |
+| 0–45vh | The name rises and scales to 72%; role, statement and actions settle beneath it (10–45vh) |
+| 30–60vh | The header slides in |
+| 0–200vh | The camera lifts and moves forward: near ranges fall away fastest, far ones slowest; clouds close in and brighten |
+| 120–170vh | The name and actions rise away into the cloud |
+| 150–200vh | The view whitens into parchment, which is the Archive's paper below |
+
+The landscape is a WebGL shader; the choreography is CSS (time-based, then scroll-driven). Under
+reduced motion, or without scroll-driven animation support, the landing rests with every element
+visible over a still frame.
 
 ## The motif — the Divergence
 
@@ -109,7 +122,7 @@ A straight path and a single stroke that leaves it. It changes form as the visit
 | Where | Form | Component |
 | --- | --- | --- |
 | Header, footer, favicon, section labels | Cinnabar stamp; bare glyph | `DivergenceMark` |
-| Hero | The disc as a seal carved with the motif; pressing it breaks the shard away | `Seal` |
+| Landing | A hairline road drawn down from the name | `Hero` |
 | Whole home page | A dashed road; the path walks it, a cinnabar node marks where it diverges, and it winds further into the ranges with every scene until it reaches the sun | `World` |
 | Archive → disciplines, record → destination | The paper bows away into the landscape; a dashed road follows the curve | `BowDivider` |
 | Approach | A rail fills as the reader advances; the current step branches off it | `StickySteps` |
@@ -128,7 +141,7 @@ Extend the motif before introducing any new symbol.
 | Hover | Colour shift over 200ms; underline draws in; action arrow moves 4px. Never the only way to learn something |
 | Current | The nav link for the section in view gets `aria-current`, full-strength text and a drawn underline |
 | Focus | 2px outline in the surface's focus colour, 4px offset (`:focus-visible`) |
-| Active | Action links dip to 97% scale and the cinnabar fill deepens, 120ms; the seal dips to 96% |
+| Active | Action links dip to 97% scale and the cinnabar fill deepens, 120ms |
 | Disabled | Not used yet. Unavailable actions are omitted, not greyed out |
 | Reduced motion | No animation, no hover/press movement; everything visible immediately. Colour changes remain |
 
@@ -151,24 +164,13 @@ Rules are in `CLAUDE.md` → Motion. Constants: `src/lib/motion.ts` and the `--d
 | Token | Value | Use |
 | --- | --- | --- |
 | `ease-entrance` | `cubic-bezier(0.22, 1, 0.36, 1)` | Standard entrances, UI feedback, character roll |
-| `ease-settle` | `cubic-bezier(0.16, 1, 0.3, 1)` | Large reveals: headlines, artwork, the seal, the archive frame |
+| `ease-settle` | `cubic-bezier(0.16, 1, 0.3, 1)` | Large reveals: headlines, the name, artwork, the archive frame |
 | `ease-ink` | `cubic-bezier(0.65, 0, 0.35, 1)` | Drawn strokes |
 | press / hover | 120ms / 200ms | UI feedback |
 | roll | 420ms + 16ms per character | `RollText` |
 | reveal | 650ms | Block reveals |
 | headline | 900ms, 70ms between words | Masked headlines and words, artwork unveil |
 | draw | 2.4s | Hero path |
-
-### Hero opening sequence (CSS, plays without JavaScript)
-
-| Time | Element |
-| --- | --- |
-| 0ms | "Portfolio of …" label settles |
-| 0 / 140 / 280ms | THE / UNORTHODOX / PATH rise from their masks, each settling from a 2.5° lean |
-| 320ms | Seal settles |
-| 700ms → 3.1s | Path draws: up the road, then away toward the seal |
-| ~1.75s | Divergence node lands; one ring spreads and fades |
-| 820ms | Role, statement and actions settle |
 
 ### Effects
 
@@ -181,12 +183,11 @@ Rules are in `CLAUDE.md` → Motion. Constants: `src/lib/motion.ts` and the `--d
 | Character roll | Nav links, action links, archive numerals and "Read the case study" | `RollText` (CSS) | Off |
 | Magnetic pull | "Explore the work", "Message me on LinkedIn" | `Magnetic`: up to 8px toward the pointer, mouse only | Off |
 | Archive row | Each project row on hover or focus | Rule draws across; numeral rolls; title underlines; stack chips light in turn; art frame opens from a 5–6% inset while the drawing settles from 1.08×; per-project story | Colour only |
-| Pointer depth | Archive art (≤5°), seal (≤10°), hero ridges (≤22px sideways) | Springs; mouse only | Off |
-| Scroll depth | Hero ridges lag up to 64px; seal sinks up to 140px | Motion `useScroll` | Off |
+| Pointer depth | Archive art (≤5°) | Springs; mouse only | Off |
+| Landing travel | Name, actions, header, camera, cloud bank | CSS scroll timeline + shader | Still, all visible |
 | Bow hand-off | Archive → approach | Arc deepens from 30% to full as the seam rises; dashed line travels along it | Full depth, still |
 | Sticky steps | Approach (from `lg`) | Heading and index stay; active step marked in the index, on the rail, and with a raised panel | Rail drawn full; marker still updates |
 | Ripple hand-off | Capabilities → profile | Three ridges close from up to 36px apart | Closed |
-| Seal | Hero | Press to break and restore | Instant change |
 
 ### Per-project hover stories (`ProjectArt`)
 

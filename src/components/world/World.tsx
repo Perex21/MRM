@@ -23,9 +23,9 @@ import { Drift } from "./Drift";
  * moved on.
  *
  * Scenes, in page order (see content/sections.ts):
- *   Arrival      dense mist, ranges low, the path barely begun
- *   The Path     mist parts, the land opens, the path winds further
+ *   Arrival      (covered by the landing shader, Atmosphere)
  *   The Archive  (paper)
+ *   The Path     mist parts, the land opens, the path winds further
  *   Disciplines  mist gathers again among higher ranges
  *   The Record   (paper)
  *   Destination  mist settles, the ranges rise, the sun stands on the horizon
@@ -61,19 +61,19 @@ const near = ridgePath(W, H, 800, [
 ]);
 
 /** Section ids whose tops mark scene changes, in page order. */
-const SCENES = ["approach", "work", "capabilities", "profile", "contact"] as const;
+const SCENES = ["work", "approach", "capabilities", "profile", "contact"] as const;
 
-// One value per stop: [arrival, path, archive, disciplines, record, destination, end].
+// One value per stop: [arrival, archive, path, disciplines, record, destination, end].
 const FRAMES = {
-  farY: [0, 40, 60, 70, 80, 20, 10],
-  midY: [0, 80, 110, 130, 140, 50, 30],
-  nearY: [0, 140, 190, 220, 230, 100, 70],
-  mist: [1, 0.45, 0.4, 0.85, 0.6, 0.3, 0.3],
+  farY: [0, 20, 40, 70, 80, 20, 10],
+  midY: [0, 40, 80, 130, 140, 50, 30],
+  nearY: [0, 70, 140, 220, 230, 100, 70],
+  mist: [1, 0.7, 0.45, 0.85, 0.6, 0.3, 0.3],
   /** How far the two mist banks part, in vw. */
-  part: [0, 22, 30, 6, 12, 26, 26],
-  sunY: [42, 42, 36, 28, 18, 0, 0],
+  part: [0, 11, 22, 6, 12, 26, 26],
+  sunY: [42, 42, 42, 28, 18, 0, 0],
   sun: [0, 0, 0, 0.25, 0.55, 1, 1],
-  draw: [0.34, 0.5, 0.6, 0.72, 0.84, 1, 1],
+  draw: [0.34, 0.42, 0.5, 0.72, 0.84, 1, 1],
   path: [0.85, 0.4, 0.4, 0.45, 0.4, 0.85, 0.85],
 } as const;
 
@@ -118,15 +118,15 @@ export function World() {
   const midX = useTransform(scrollYProgress, (p) => `${still ? 0 : p * -30}%`);
   const nearX = useTransform(scrollYProgress, (p) => `${still ? 0 : p * -48}%`);
 
-  // The opening gust shoves the mist downwind; it drifts partway back.
+  // The opening gust shoves the mist banks hard downwind as its front passes; they drift partway back.
   const gust = useMotionValue(0);
   useEffect(() => {
     if (still) return;
     const elapsed = performance.now() - GUST.start;
     if (elapsed > GUST.duration) return;
-    const controls = animate(gust, [0, 9, 3], {
+    const controls = animate(gust, [0, 0, 18, 6], {
       duration: GUST.duration / 1000,
-      times: [0, 0.45, 1],
+      times: [0, 0.2, 0.5, 1],
       ease: [0.33, 0, 0.2, 1],
       delay: Math.max(0, -elapsed) / 1000,
     });

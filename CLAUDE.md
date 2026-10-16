@@ -22,11 +22,12 @@ teams, freelance clients. Details live in `docs/`.
 - Tone: quiet confidence, discipline, craft. A recruiter must understand the page in seconds
   without decoding the theme.
 - The recurring motif is **the Divergence**: a straight line and one stroke that leaves it.
-  Reuse it (`DivergenceMark`, `Seal`, `World`, `RidgeDivider`, `BowDivider`, `RippleDivider`,
+  Reuse it (`DivergenceMark`, `World`, `RidgeDivider`, `BowDivider`, `RippleDivider`,
   `ProjectArt`, `Pipeline`, `StickySteps`) rather than adding new symbols.
 - The home page's landscape is one fixed `World` layer, visible through ink scenes and covered
   by paper scenes. Change the journey by editing its scene frames, not by adding per-section
-  backgrounds.
+  backgrounds. The landing (`Hero`) is the one exception: its own living landscape
+  (`Atmosphere`, a WebGL shader) fills a sticky viewport and ends in the Archive's paper.
 - Do not turn every section into a card. Prefer hairlines, whitespace, and grid alignment.
 
 ## Truthful content (hard rule)
@@ -45,8 +46,8 @@ teams, freelance clients. Details live in `docs/`.
 
 - Next.js App Router, React 19, TypeScript strict, Tailwind CSS v4, npm. Alias `@/*` → `src/*`.
 - Server components by default. `"use client"` only for real interactivity (currently
-  `MobileNav`, `NavLinks`, `Reveal`, `MaskedWords`, `Magnetic`, `Seal`, `World`, `Drift`,
-  `WindGust`, `BowDivider`, `RippleDivider`, `StickySteps`, `ArtField`, `ProjectDetails`).
+  `MobileNav`, `NavLinks`, `Reveal`, `MaskedWords`, `Magnetic`, `World`, `Drift`,
+  `Atmosphere`, `BowDivider`, `RippleDivider`, `StickySteps`, `ArtField`, `ProjectDetails`).
   `RollText` is CSS-only.
 - Layout: `src/app` (routes), `src/components/{layout,sections,projects,ui,graphics,motion,world}`,
   `src/content` (typed data), `src/lib` (helpers), `src/styles/tokens.css` (design tokens).
@@ -73,18 +74,24 @@ teams, freelance clients. Details live in `docs/`.
 
 ## Motion
 
-- Vocabulary: the opening gust (once), letters carried in on it, fade + upward settle, clip
+- Vocabulary: the arrival (once), letters carried in on the gust, fade + upward settle, clip
   reveals for artwork, masked headline lines and words, drawn strokes, character-roll labels,
   precise hover/press, small pointer-driven depth and magnetism. One primary motion per
   element. No bounce, idle loops, scroll-jacking or custom cursor. CSS `position: sticky` is
-  used for the approach index only; nothing pins scrolling.
-- The gust is one designed event: canvas wind (`WindGust`) and the CSS name reveal share one
-  clock (`GUST` in `lib/motion.ts`, `--gust-start` in tokens). It never blocks input and skips
-  itself if hydration is too late to be in step.
-- Scroll-linked movement: the world layer (ranges, mist, path, sun), the seal's drift, the bow
+  used for the landing viewport and the approach index; nothing hijacks scrolling.
+- The arrival is one designed event. For three seconds there is no text or UI at all, only the
+  landscape (`Atmosphere`): fog thins, the ranges emerge, clouds and mist move. At 2.4s a gust
+  crosses the screen and at 3s the name alone comes through it (CSS `arrival-*` in
+  `globals.css`). The header, role, statement and actions arrive only when the visitor scrolls;
+  further scrolling carries the camera into the clouds, which close into the Archive's paper.
+  Shader, CSS and `GUST` in `lib/motion.ts` share one clock (navigation time): change them
+  together.
+- Scroll-linked movement: the landing (shader camera and CSS `animation-timeline: scroll()`),
+  the world layer (ranges, mist, path, sun), the bow
   and ripple hand-offs and the approach rail. All are pure functions of scroll position, so
   they reverse exactly when scrolling back, and all are inert under reduced motion.
-- Canvases (`WindGust`, `Drift`) run animation frames only while something moves them, cap
+- Canvases run animation frames only while needed (`Drift` while something moves it,
+  `Atmosphere` while the landing is on screen and the tab is visible), cap
   device pixel ratio at 1.5, and clean up their frames and listeners.
 - Hover is never the only way to see something. Hover and keyboard focus (`focus-within`)
   trigger the same choreography; touch gets the resting state, which shows every fact.

@@ -16,10 +16,10 @@ export type Section = {
   scene: string;
 };
 
-/** In journey order: the path, the archive, the disciplines, the record, the destination. */
+/** In journey order: the archive, the path, the disciplines, the record, the destination. */
 export const sections: Section[] = [
-  { id: "approach", chapter: "02", label: "Approach", title: "Engineering approach", scene: "The Path" },
-  { id: "work", chapter: "03", label: "Work", title: "Selected work", scene: "The Archive" },
+  { id: "work", chapter: "02", label: "Work", title: "Selected work", scene: "The Archive" },
+  { id: "approach", chapter: "03", label: "Approach", title: "Engineering approach", scene: "The Path" },
   { id: "capabilities", chapter: "04", label: "Capabilities", title: "Technical capabilities", scene: "The Disciplines" },
   { id: "profile", chapter: "05", label: "Profile", title: "Professional profile", scene: "The Record" },
   { id: "contact", chapter: "06", label: "Contact", title: "Contact", scene: "The Destination" },

@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { BowDivider } from "@/components/graphics/BowDivider";
 import { RidgeDivider } from "@/components/graphics/RidgeDivider";
 import { Container } from "@/components/layout/Container";
 import { Reveal } from "@/components/motion/Reveal";
@@ -13,7 +12,7 @@ const { chapter, title, scene } = section("capabilities");
 
 /**
  * The Disciplines — technical capabilities, as a row of hanging scrolls on
- * the ink landscape. The Archive's paper bows down into this scene; each
+ * the ink landscape, continuing from the Path; each
  * discipline then unrolls from its rod, one after another, as it comes into
  * view. Every item links to the case studies that used it, so the list can be
  * checked rather than taken on trust.
@@ -24,7 +23,6 @@ const { chapter, title, scene } = section("capabilities");
 export function Capabilities() {
   return (
     <section id="capabilities" aria-labelledby="capabilities-title" className="relative">
-      <BowDivider />
       <Container className="pt-section pb-section">
         <SectionHeading id="capabilities-title" chapter={chapter} eyebrow={scene} title={title}>
           <p>
