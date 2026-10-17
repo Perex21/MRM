@@ -327,12 +327,96 @@
     visibility 0s;
 }
 
-/* On arrival the panel opens, the name is written, then the rest unfolds. */
-@keyframes realm-panel-in {
+/* The Archive's heading over the realm, on a soft pool of ink so it reads over bright ranges. */
+.realm-heading {
+  background: radial-gradient(
+    ellipse 100% 100% at 0% 0%,
+    color-mix(in oklab, var(--color-ink) 78%, transparent) 0%,
+    color-mix(in oklab, var(--color-ink) 45%, transparent) 55%,
+    transparent 100%
+  );
+}
+
+/*
+ * Markers: a small gold diamond on a fine thread, the place named above it.
+ * Hover (or focus on the matching list entry) brightens it and tells what is
+ * there; a chosen destination keeps it lit while the camera travels.
+ */
+.realm-marker-label {
+  text-shadow:
+    0 1px 2px var(--color-ink),
+    0 0 14px var(--color-ink);
+}
+
+.realm-marker-diamond {
+  box-shadow: 0 0 10px 1px color-mix(in oklab, var(--color-gold) 55%, transparent);
+  transition:
+    scale var(--duration-hover) var(--ease-entrance),
+    background-color var(--duration-hover) var(--ease-entrance),
+    box-shadow var(--duration-hover) var(--ease-entrance);
+}
+
+.realm-marker-thread {
+  opacity: 0.6;
+  transition: opacity var(--duration-hover) var(--ease-entrance);
+}
+
+.realm-marker[data-flip="true"] .realm-marker-thread {
+  rotate: 180deg;
+}
+
+.realm-marker:is(:hover, [data-selected="true"]) .realm-marker-diamond {
+  scale: 1.5;
+  background-color: var(--color-gold-light);
+  box-shadow: 0 0 18px 3px color-mix(in oklab, var(--color-gold) 70%, transparent);
+}
+
+.realm-marker:is(:hover, [data-selected="true"]) .realm-marker-thread {
+  opacity: 1;
+}
+
+.realm-marker:not(:hover, [data-selected="true"]) .realm-marker-more {
+  opacity: 0.75;
+}
+
+.realm-rail-entry {
+  box-shadow: inset 0 -1px 0 transparent;
+  transition: box-shadow var(--duration-hover) var(--ease-entrance);
+}
+
+.realm-rail-entry[data-selected="true"],
+.realm-rail-entry:focus-visible {
+  box-shadow: inset 0 -1px 0 var(--color-gold);
+}
+
+/*
+ * On arrival the scrim gathers on the side the words sit on (below them on
+ * narrow screens), the name is written, then the rest unfolds.
+ */
+.realm-arrival-scrim {
+  background: linear-gradient(
+    to top,
+    color-mix(in oklab, var(--color-ink) 94%, transparent) 0%,
+    color-mix(in oklab, var(--color-ink) 82%, transparent) 55%,
+    transparent 85%
+  );
+  animation: realm-scrim-in 900ms var(--ease-settle) both;
+}
+
+@media (min-width: 64rem) {
+  .realm-arrival-scrim {
+    background: linear-gradient(
+      to right,
+      color-mix(in oklab, var(--color-ink) 92%, transparent) 0%,
+      color-mix(in oklab, var(--color-ink) 78%, transparent) 38%,
+      transparent 62%
+    );
+  }
+}
+
+@keyframes realm-scrim-in {
   from {
     opacity: 0;
-    transform: translate3d(2rem, 0, 0);
-    clip-path: inset(0 0 0 100%);
   }
 }
 
@@ -343,19 +427,15 @@
   }
 }
 
-.realm-panel {
-  animation: realm-panel-in 900ms var(--ease-settle) both;
-}
-
-.realm-panel:not([data-written="true"]) .realm-panel-part {
+.realm-arrival:not([data-written="true"]) .realm-arrival-part {
   visibility: hidden;
 }
 
-.realm-panel[data-written="true"] .realm-panel-part {
+.realm-arrival[data-written="true"] .realm-arrival-part {
   animation: realm-part-in 700ms var(--ease-entrance) both;
 }
 
-.realm-panel[data-written="true"] .realm-panel-part + .realm-panel-part {
+.realm-arrival[data-written="true"] .realm-arrival-part + .realm-arrival-part {
   animation-delay: 160ms;
 }
 

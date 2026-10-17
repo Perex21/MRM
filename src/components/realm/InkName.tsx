@@ -22,15 +22,17 @@ type InkNameProps = {
   /** Called once the brush has left the paper. */
   onWritten?: () => void;
   className?: string;
+  /** Dark ink on paper, or pale ink laid over the world itself. */
+  tone?: "dark" | "light";
 };
 
-type Colors = Record<"ink" | "inkRaised" | "paper" | "bamboo" | "bambooDeep" | "cord", string>;
+type Colors = Record<"ink" | "stroke" | "inkRaised" | "paper" | "bamboo" | "bambooDeep" | "cord", string>;
 
 /** Angle of the brush as a right hand holds it: the handle up and to the right. */
 const HOLD = -1.02;
 const LENGTH = 7.3;
 
-export function InkName({ text, onWritten, className }: InkNameProps) {
+export function InkName({ text, onWritten, className, tone = "dark" }: InkNameProps) {
   const ref = useRef<HTMLCanvasElement>(null);
   const prefersReducedMotion = useReducedMotion();
   const written = useRef(onWritten);
@@ -50,6 +52,7 @@ export function InkName({ text, onWritten, className }: InkNameProps) {
     const read = (name: string) => style.getPropertyValue(name).trim();
     const colors: Colors = {
       ink: read("--pv-ink"),
+      stroke: read(tone === "light" ? "--pv-parchment" : "--pv-ink"),
       inkRaised: read("--pv-ink-raised"),
       paper: read("--pv-parchment"),
       bamboo: read("--pv-bamboo"),
@@ -122,8 +125,8 @@ export function InkName({ text, onWritten, className }: InkNameProps) {
           // Fresh ink near the tip is wetter, and darker for it.
           m.globalCompositeOperation = "source-atop";
           const wet = m.createRadialGradient(point.x, point.y, 0, point.x, point.y, size * 1.6);
-          wet.addColorStop(0, withAlpha(colors.ink, 0.5));
-          wet.addColorStop(1, withAlpha(colors.ink, 0));
+          wet.addColorStop(0, withAlpha(colors.stroke, 0.5));
+          wet.addColorStop(1, withAlpha(colors.stroke, 0));
           m.fillStyle = wet;
           m.fillRect(0, 0, width, height);
           ctx.drawImage(mask, 0, 0, width, height);
@@ -194,7 +197,7 @@ export function InkName({ text, onWritten, className }: InkNameProps) {
       cancelled = true;
       cancelAnimationFrame(frame);
     };
-  }, [text, prefersReducedMotion]);
+  }, [text, tone, prefersReducedMotion]);
 
   return <canvas ref={ref} aria-hidden="true" className={`palette-vars pointer-events-none relative block h-24 w-full ${className ?? ""}`} />;
 }
@@ -226,10 +229,10 @@ function inkText(layout: Layout, font: string, width: number, height: number, dp
   const t = c.getContext("2d")!;
   t.scale(dpr, dpr);
   t.font = font;
-  t.fillStyle = colors.ink;
-  t.strokeStyle = colors.ink;
+  t.fillStyle = colors.stroke;
+  t.strokeStyle = colors.stroke;
   t.lineJoin = "round";
-  t.shadowColor = withAlpha(colors.ink, 0.28);
+  t.shadowColor = withAlpha(colors.stroke, 0.28);
   t.shadowBlur = layout.size * 0.09;
   for (const line of layout.lines) t.fillText(line.text, line.x, line.baseline);
   t.shadowBlur = 0;
@@ -240,7 +243,7 @@ function inkText(layout: Layout, font: string, width: number, height: number, dp
     t.strokeText(line.text, line.x, line.baseline);
   }
   t.globalCompositeOperation = "destination-out";
-  const blotch = t.createPattern(noiseTile(colors.ink, 0.07, 0.05, 5), "repeat");
+  const blotch = t.createPattern(noiseTile(colors.stroke, 0.07, 0.05, 5), "repeat");
   if (blotch) {
     t.fillStyle = blotch;
     t.fillRect(0, 0, width, height);

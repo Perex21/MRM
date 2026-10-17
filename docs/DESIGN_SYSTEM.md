@@ -209,12 +209,17 @@ One primary motion per element. Scroll is never taken over.
 | Stage | What the visitor sees |
 | --- | --- |
 | Veil | The landing's dark mist continues; the realm fades up beneath it |
-| See the world | Above a sea of clouds: stone pillars, ranges, a moon; the three places glow through clearings, joined by thin golden routes; markers name them |
-| Enter | The camera dives through the clouds — moving wisps — and levels onto a terrace with a stone balustrade and two lanterns |
+| See the world | Above a sea of clouds lit gold by a low sun: ranges, a gorge, a raised lake, waterfalls, forests; the three places show through clearings, joined by golden routes along the land; small gold diamonds name them |
+| Enter | The camera dives through the clouds — moving wisps — and levels onto a paved terrace with a stone balustrade, two lanterns and a lone figure looking out |
 | Explore | From the terrace all three places are in view on desktop; look around by drag, swipe, arrow keys or a mouse lean |
 | Travel | The camera follows the chosen golden route; ginkgo leaves stream with it |
-| Arrive | The picture shifts aside, a parchment panel opens, the brush writes the name, the details unfold |
+| Arrive | The picture shifts aside, a scrim gathers on one side, the brush writes the name in pale ink over the world, the details unfold; back to the Overlook or on to the next place |
 
-Accents: antique gold (`gold`, `gold-light`, `gold-deep`) for routes, markers, beacons and leaves
-only; cinnabar for the Sentinel's beacon and the primary action; jade and silver in the land and
-mist. Each place tints the air: the Spire moonlit, the Bridge jade, the Lake dusk-warm.
+Accents: antique gold (`gold`, `gold-light`, `gold-deep`) for routes, markers, lamps and leaves;
+cinnabar, restrained, for lacquered posts, the Sentinel's lanterns, maples and the primary action;
+jade and pine in the land and the lake; silver in the mist. Each place tints the air: the Spire
+storm-cold, the Bridge golden, the Lake jade.
+
+Markers have three states: at rest a small gold diamond with a soft glow on a fine thread under
+the place's name; on hover (or focus on its list entry) the diamond brightens and grows and the
+thread firms; while chosen and travelled to, it stays lit.

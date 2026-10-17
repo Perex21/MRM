@@ -184,13 +184,16 @@ void main() {
   col += SILVER * 0.16 * glow * (0.35 + 0.65 * intro);
 
   // High clouds, billowing as they drift; the gust churns and carries them.
-  vec2 cp = vec2(p.x * 1.1 - t * 0.035 - D * 0.5 * shear + s * 0.4, p.y * 2.3 - s * 1.2);
-  vec2 warp = vec2(fbm(cp * 0.8 + vec2(0.0, t * 0.05)), fbm(cp * 0.8 + vec2(5.2, -t * 0.03)));
-  float c = fbm(cp + warp * (1.6 + w * 1.2));
+  // (Only where there is sky: below it the noise could not show.)
   float sky = smoothstep(0.4, 0.85, uv.y + s * 0.15);
-  float cloud = smoothstep(0.42, 0.84, c) * sky;
-  vec3 cloudCol = mix(MIST * 1.8, SILVER * 0.5, c) + SILVER * 0.18 * glow;
-  col = mix(col, cloudCol, cloud * 0.75);
+  if (sky > 0.0) {
+    vec2 cp = vec2(p.x * 1.1 - t * 0.035 - D * 0.5 * shear + s * 0.4, p.y * 2.3 - s * 1.2);
+    vec2 warp = vec2(fbm(cp * 0.8 + vec2(0.0, t * 0.05)), fbm(cp * 0.8 + vec2(5.2, -t * 0.03)));
+    float c = fbm(cp + warp * (1.6 + w * 1.2));
+    float cloud = smoothstep(0.42, 0.84, c) * sky;
+    vec3 cloudCol = mix(MIST * 1.8, SILVER * 0.5, c) + SILVER * 0.18 * glow;
+    col = mix(col, cloudCol, cloud * 0.75);
+  }
 
   // Five ranges, far to near. Each has its own haze, drift, parallax and mist.
   // surf: depth of what this pixel sees (sky -0.4, far range 0, near range 1).
@@ -202,9 +205,15 @@ void main() {
     float x = (p.x - cx) / zoom + cx + s * mix(0.06, 0.55, d) + t * 0.003 * (1.0 + d * 2.0);
     float base = mix(0.5, 0.1, d) - s * mix(0.04, 0.3, d) - travel * mix(0.02, 0.55, d);
     float amp = mix(0.26, 0.17, d) * zoom;
-    float h = rangeHeight(x, fi, d, base, amp);
+    // The ridge is only traced where it can matter: above the range's highest
+    // possible peak none of it shows, and well below its foot it is solid.
+    float maxH = base + amp * 1.04;
+    bool over = p.y > maxH + 0.005;
+    bool under = p.y < base - 0.05;
+    float h = over || under ? base : rangeHeight(x, fi, d, base, amp);
     float edge = p.y - h;
-    float inside = 1.0 - smoothstep(-0.0015, 0.0025 + d * 0.002, edge);
+    float inside = over ? 0.0 : under ? 1.0 : 1.0 - smoothstep(-0.0015, 0.0025 + d * 0.002, edge);
+    if (!over) {
 
     // Aerial perspective: far ranges pale into the mist; near ones are ink.
     vec3 tone = mix(MIST * 1.5, DEEP, pow(d, 0.7));
@@ -218,10 +227,11 @@ void main() {
     tone = mix(MIST * 1.45, tone, mix(1.0, foot, 0.7 - d * 0.3));
     col = mix(col, tone, inside);
     surf = mix(surf, d, inside);
+    }
 
     // Cloud streaming off the lee of the peaks, downwind of each summit. A
     // faint banner always flies; the gust tears it out long and bright.
-    if (i < 3) {
+    if (i < 3 && p.y < maxH + 0.1 && p.y > base - 0.03) {
       float lee = 0.05 + 0.12 * w;
       float hUp = rangeHeight(x - lee, fi, d, base, amp);
       float above = p.y - h;
@@ -235,14 +245,16 @@ void main() {
     // shoves it downwind, churns it and lifts it.
     vec2 mp = vec2(p.x * mix(1.1, 2.4, d) - t * mix(0.015, 0.05, d) - D * mix(0.8, 1.6, d) * shear + s * 0.6,
                    p.y * mix(5.0, 2.8, d) + fi * 2.3);
-    float mn = fbmx(mp + vec2((fbm(mp * 0.6 + t * 0.05) - 0.5) * (1.0 + w * 0.4), 0.0));
     float my = base + 0.03 + d * 0.02 + w * 0.03;
     float band = exp(-pow((p.y - my) / mix(0.05, 0.14, d), 2.0));
-    float mist = band * smoothstep(0.34, 0.8, mn);
-    col = mix(col, MIST * mix(2.8, 2.0, d) + SILVER * 0.08 * glow, mist * mix(0.6, 0.72, d) * (0.6 + 0.4 * intro));
+    if (band > 0.003) {
+      float mn = fbmx(mp + vec2((fbm(mp * 0.6 + t * 0.05) - 0.5) * (1.0 + w * 0.4), 0.0));
+      float mist = band * smoothstep(0.34, 0.8, mn);
+      col = mix(col, MIST * mix(2.8, 2.0, d) + SILVER * 0.08 * glow, mist * mix(0.6, 0.72, d) * (0.6 + 0.4 * intro));
+    }
 
     // A sea of cloud lies between the far ranges; the peaks rise out of it.
-    if (i == 1) {
+    if (i == 1 && p.y > base - 0.2 && p.y < base + 0.1) {
       vec2 sp = vec2(p.x * 1.6 - t * 0.025 - D * 1.0 * shear + s * 0.3, p.y * 7.0);
       float sea = fbmx(sp + vec2(fbm(sp * 0.5 - t * 0.04) * (1.2 + w), 0.0));
       float seaBand = smoothstep(base + 0.1, base - 0.05, p.y) * smoothstep(base - 0.2, base - 0.05, p.y);
@@ -270,16 +282,20 @@ void main() {
   col = mix(col, fogCol, clamp(fog, 0.0, 0.95));
 
   // Near wisps drifting past low in the view, carried on by the gust.
-  float fw = fbm(vec2(p.x * 0.75 - t * 0.06 - D * 2.5 * shear, p.y * 1.7 + t * 0.025));
-  float fmask = smoothstep(0.56, 0.86, fw) * smoothstep(0.55, 0.0, uv.y);
-  col = mix(col, MIST * 2.0, fmask * 0.35);
+  if (uv.y < 0.55) {
+    float fw = fbm(vec2(p.x * 0.75 - t * 0.06 - D * 2.5 * shear, p.y * 1.7 + t * 0.025));
+    float fmask = smoothstep(0.56, 0.86, fw) * smoothstep(0.55, 0.0, uv.y);
+    col = mix(col, MIST * 2.0, fmask * 0.35);
+  }
 
   // Travelling forward: clouds open toward the camera and brighten into paper.
-  vec2 tq = (p - vec2(cx, 0.5)) / (1.0 + travel * 3.5);
-  float ac = fbm(tq * 2.6 + vec2(t * 0.03, s * 3.0));
-  float approach = smoothstep(0.38, 0.78, ac) * travel;
-  vec3 cloudTone = mix(MIST * 2.3, PARCH, smoothstep(0.7, 1.0, s));
-  col = mix(col, cloudTone, approach * 0.85);
+  if (travel > 0.0) {
+    vec2 tq = (p - vec2(cx, 0.5)) / (1.0 + travel * 3.5);
+    float ac = fbm(tq * 2.6 + vec2(t * 0.03, s * 3.0));
+    float approach = smoothstep(0.38, 0.78, ac) * travel;
+    vec3 cloudTone = mix(MIST * 2.3, PARCH, smoothstep(0.7, 1.0, s));
+    col = mix(col, cloudTone, approach * 0.85);
+  }
 
   // Vignette and a breath of grain, then the cloud bank closes into parchment.
   float vig = smoothstep(1.25, 0.35, length((uv - 0.5) * vec2(aspect * 0.75, 1.0)));

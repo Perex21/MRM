@@ -61,8 +61,8 @@ docs/
 | Component | Why it needs the client |
 | --- | --- |
 | `Reveal` | Scroll-triggered reveal |
-| `RealmExplorer` | The Archive's realm: loads the scene, scroll-driven descent, looking around, travel, markers, arrival panel |
-| `InkName` | A project's name written by a brush on arrival (2D canvas) |
+| `RealmExplorer` | The Archive's realm: loads the scene, scroll-driven descent, looking around, travel, markers, the arrival laid over the place |
+| `InkName` | A project's name written by a brush on arrival (2D canvas; dark ink on paper or pale ink over the world) |
 | `Atmosphere` | The landing's WebGL landscape: time- and scroll-driven, runs only while visible |
 | `MaskedWords` | Once-only word reveal (shares `useRevealPhase` with `Reveal`) |
 | `Magnetic` | Pointer pull on primary actions |
@@ -235,37 +235,57 @@ world the visitor can explore.
   three.js is the smallest dependency that does; it is imported dynamically when the section
   comes within 1.5 screens, so the first screen does not pay for it. React Three Fiber was not
   added: one imperative scene inside one effect needs no reconciler.
-- **One shading model** (`realm/scene.ts`): ink-wash tone from slope and height, vertical
-  texture strokes (cun) on rock faces, moonlit rims, and height fog with low valley mist, tinted
-  by the destination the camera is nearest (moon, jade, dusk). Colours come from the tokens via
-  `palette-vars`; `ColorManagement` is off and output is linear, so tokens render as written.
-- **The land is data** (`lib/realm.ts`): seeded noise for the heightfield, pillars placed with
-  clear sightlines to each destination, the three destinations (anchor, arrival view, route
-  waypoints, mood), and the camera's descent as keyframes. Nothing is random at runtime, so
-  places stay where they are on every visit and device.
+- **Light and air** (`realm/scene.ts`, revised 2026-10-17): a low golden sun in the west, a
+  cool sky above and warm bounce below. Aerial perspective fades distance into the sky's own
+  horizon colour (warm towards the sun, silver away from it), not a flat grey; valley mist lies
+  in drifting banks; a lit sea of cloud has clearings over the destinations. Each region tints
+  the light as the camera nears it: storm-cold at the Sentinel, golden at the Ledger, jade at the
+  Echo. Colours come from the tokens via `palette-vars`; `ColorManagement` is off and output is
+  linear, so tokens render as written.
+- **The land** (`lib/realm.ts`, revised 2026-10-17) is one height function: a river valley,
+  foothills, ring ranges, the Sentinel's massif, two tablelands split by the Ledger's gorge, a
+  raised plateau holding the Echo's lake, the Overlook's shoulder. The shader paints rock (soft
+  strata, vertical brush strokes) on steep ground, pine and jade on gentle ground, autumn reds in
+  the warm valleys, snow above a snowline that drops around the Sentinel. Waterfalls are draped
+  down the real cliffs; a few stone pillars and three floating rocks remain as accents, not the
+  composition. Nothing is random at runtime, so places stay where they are on every visit and
+  device.
 - **Destinations** are framed by the three distances of Chinese landscape painting: the Sentinel
-  Spire (high distance — a watchtower on the tallest pillar, its beam sweeping the realm) for the
-  phishing platform; the Ledger Bridge (deep distance — a stone arch joining two pillars, two
-  ledgers reconciled) for the GST platform; the Echo Lake (level distance — a pale orb over its
-  own ripples, after the ECHOSS site's hero) for ECHOSS.
+  Spire (high distance — a walled fortress with a seven-tiered keep and red lanterns on a
+  storm-bound crag, snow drifting) for the phishing platform; the Ledger Bridge (deep distance —
+  a three-arched stone bridge over a gorge, a lantern-lit temple town on the river below, red
+  maples, two ledgers reconciled) for the GST platform; the Echo Lake (level distance — a gate
+  standing in a jade lake with a pale orb inside its frame over its own ripples, after the
+  ECHOSS site's hero; temples on the rocks, floating rocks above) for ECHOSS.
+- **Draw calls**: static architecture is merged per material (`Builder`), trees are two
+  instanced meshes, so the world draws in a few dozen calls. Every shader program is compiled
+  (`compileAsync`) before the first frame, so nothing stalls the first time it comes into view.
+  Small, high-up things (the leaves) use haze only, not the full mist-and-cloud model.
 - **Track and stage.** A tall track holds a sticky stage: 3 screens drive the descent (veil →
   overview above the clouds → through them → the terrace), then 1.2 screens hold the visitor on
   the terrace. `data-phase` on the stage shows each overlay only in its phases.
-- **Travel** is a Catmull–Rom flight along the route's waypoints (2.6–4.6s, eased), with a small
-  field-of-view swell; looking around is a yaw/pitch offset from drag, swipe, arrow keys or a
-  mouse lean. On arrival `setViewOffset` shifts the picture so the place stays clear of the panel.
+- **Travel** is a Catmull–Rom flight over the route's waypoints, lifted clear of the land
+  (2.8–5.2s, eased), with a small field-of-view swell; looking around is a yaw/pitch offset from
+  drag, swipe, arrow keys or a mouse lean. Routes follow the ground (and the bridge deck); fainter
+  threads join the places to each other. On arrival `setViewOffset` shifts the picture so the
+  place stays clear of the words.
 - **The guiding wind**: instanced ginkgo leaves (shape drawn in the fragment shader) stream
   along a focused route or around the camera in flight, then fade. A nod to the guiding wind
   that replaces a minimap in Ghost of Tsushima: the world itself points the way.
 - **Readable and accessible**: the destination list (always reachable by keyboard), markers
-  (pointer convenience, hidden from assistive technology), the live-region announcement and the
-  arrival panel are HTML. The panel takes focus on arrival; Escape returns to the terrace.
+  (small gold diamonds on fine threads; pointer convenience, hidden from assistive technology),
+  the live-region announcement and the arrival are HTML. The arrival is laid over the place on a
+  scrim that darkens only the side the words sit on (below them on narrow screens), with no
+  panel of its own; its heading takes focus; Escape returns to the Overlook, and it always offers
+  the next destination.
 - **Fallbacks**: without JavaScript or WebGL, or if the context is lost, the section renders
   the atlas — the same three destinations as a plain list. Under reduced motion the realm holds
   still, the descent is skipped and the camera cuts instead of flying; the brush name appears
   whole.
-- **Cost**: terrain 320² (190² on small or low-core devices), DPR ≤ 1.5 (≤ 1.25 narrow), frames
-  only while the stage intersects the viewport and the tab is visible.
+- **Cost**: terrain 400² for the realm, 220² for the Sentinel's crags, 180² for the surround
+  (the same on every device: no device-category downgrades), built across several tasks so the
+  page never freezes; DPR ≤ 1.5 (≤ 1.25 narrow); frames paced by the governor and only while the
+  stage intersects the viewport and the tab is visible.
 - **Research behind it**: destination-map portfolios that open a panel on arrival, scroll-to-
   spline camera paths (Codrops), height-based ground fog in three.js, Google's guidance on
   accessible 3D markers, and Ghost of Tsushima's guiding wind. No layout or identity was copied.
